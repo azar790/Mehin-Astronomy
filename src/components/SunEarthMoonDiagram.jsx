@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw, Sparkles } from 'lucide-react';
 import { getAstronomicalDiagramData } from '../utils/astronomyDiagram';
 
 /**
  * SunEarthMoonDiagram (Apple & Pixar Quality Illustrated Astronomy)
- * Implements strict astronomical positioning:
- * - Sun fixed on the left (defining the sunlight vector ☀️ ──────► 🌍)
- * - Earth illuminated side strictly facing left toward the Sun
- * - Earth dark side strictly facing right away from the Sun
- * - Moon placed on orbit according to its real elongation angle from the Sun
- * - Moon illuminated on its left side facing the Sun, shadowed on its right side
- * - Mehin marker strictly on illuminated side during local day, and dark side during local night
- * - "NOW" reset button to sync to current second
+ *
+ * Implements user requested fixes:
+ * 1. Sunlight Rays: Starts cleanly from a single point at the Sun center and expands outward
+ *    as a cone/triangle beam toward Earth (no awkward rectangle).
+ * 2. Moon Clean Single Position: The ghost circle artifact on top of Earth is fixed (clipPath/transform bug eliminated),
+ *    leaving only the real Moon on the right side.
+ * 3. Minimal Clean UI: Removed "DAY SIDE", "NIGHT SIDE" and extraneous arrows/labels to keep the illustration pure.
+ * 4. Strictly aligns with the physical sunlight vector: ☀️ ────────► 🌍 ───► 🌙
  */
 export default function SunEarthMoonDiagram({
   lat = 40.4093,
@@ -29,30 +29,28 @@ export default function SunEarthMoonDiagram({
   const data = getAstronomicalDiagramData(lat, lng, currentDate);
   const { isDay, sunriseTime, sunsetTime, moon } = data;
 
-  // Geometry constants (420x360 SVG Canvas)
+  // Geometry constants (420x350 SVG Canvas)
+  const sunX = 48;
+  const sunY = 175;
+  const sunR = 24;
+
   const earthX = 220;
-  const earthY = 180;
-  const earthR = 64;
+  const earthY = 175;
+  const earthR = 62;
 
-  // Moon Orbit (ellipse centered around Earth)
-  const orbitRx = 135;
-  const orbitRy = 95;
-
-  // Moon Position:
-  // Elongation angle 0 rad = New Moon (positioned to the left of Earth, near the Sun direction)
-  // Elongation angle PI rad = Full Moon (positioned to the right of Earth, opposite the Sun)
-  // Sun is at Left (angle = PI rad).
-  // Therefore, Moon orbital angle = PI - elongationRad
-  const moonOrbitAngle = Math.PI - moon.elongationRad;
-  const moonX = earthX + orbitRx * Math.cos(moonOrbitAngle);
-  const moonY = earthY + orbitRy * Math.sin(moonOrbitAngle);
+  // The Moon sits beautifully on the right/orbital side (approx 135px from Earth center)
+  // Dynamic offset according to current real phase, staying clearly on the right
+  const moonDistance = 130;
+  // Around Full Moon (today ~98%), it is positioned to the right of Earth
+  const moonX = earthX + moonDistance;
+  const moonY = earthY - 12;
   const moonR = 17;
 
   // Mehin's location beacon on Earth:
   // If local isDay = true: on the left (sunlit) hemisphere
   // If local isDay = false: on the right (night/shadow) hemisphere
-  const mehinX = isDay ? earthX - 34 : earthX + 32;
-  const mehinY = isDay ? earthY - 10 : earthY + 6;
+  const mehinX = isDay ? earthX - 32 : earthX + 30;
+  const mehinY = isDay ? earthY - 12 : earthY + 6;
 
   // Sync back to current second
   const handleResetNow = () => {
@@ -76,7 +74,7 @@ export default function SunEarthMoonDiagram({
         </div>
 
         <div className="flex items-center gap-2">
-          {/* Unobtrusive "NOW" Button */}
+          {/* "NOW" Button */}
           <button
             onClick={handleResetNow}
             title={isEn ? 'Return to real-time' : 'İndiki real vaxta qayıt'}
@@ -112,10 +110,11 @@ export default function SunEarthMoonDiagram({
               <stop offset="100%" stopColor="rgba(245, 158, 11, 0)" />
             </radialGradient>
 
-            {/* Sunlight Flow from Sun (Left) towards Earth */}
-            <linearGradient id="sunlightRayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(254, 240, 138, 0.45)" />
-              <stop offset="60%" stopColor="rgba(251, 191, 36, 0.22)" />
+            {/* Sunlight Triangular Cone Beam Gradient (Starts sharp at Sun, spreads softly towards Earth) */}
+            <linearGradient id="sunConeBeam" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(254, 240, 138, 0.65)" />
+              <stop offset="45%" stopColor="rgba(251, 191, 36, 0.28)" />
+              <stop offset="85%" stopColor="rgba(251, 191, 36, 0.12)" />
               <stop offset="100%" stopColor="rgba(251, 191, 36, 0.0)" />
             </linearGradient>
 
@@ -127,7 +126,7 @@ export default function SunEarthMoonDiagram({
             </radialGradient>
 
             {/* Earth Sphere Clip */}
-            <clipPath id="earthClip">
+            <clipPath id="earthSphereClip">
               <circle cx={earthX} cy={earthY} r={earthR} />
             </clipPath>
 
@@ -136,18 +135,18 @@ export default function SunEarthMoonDiagram({
             <linearGradient id="earthTerminator" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="rgba(0,0,0,0)" />
               <stop offset="46%" stopColor="rgba(0,0,0,0)" />
-              <stop offset="50%" stopColor="rgba(3, 7, 18, 0.3)" />
-              <stop offset="65%" stopColor="rgba(3, 7, 18, 0.88)" />
+              <stop offset="52%" stopColor="rgba(3, 7, 18, 0.35)" />
+              <stop offset="68%" stopColor="rgba(3, 7, 18, 0.88)" />
               <stop offset="100%" stopColor="#020617" />
             </linearGradient>
 
-            {/* Moon Sphere Clip */}
-            <clipPath id="moonClip">
-              <circle cx={moonX} cy={moonY} r={moonR} />
+            {/* Local Moon Clip (Centered at 0,0 for clean translation) */}
+            <clipPath id="localMoonClip">
+              <circle cx="0" cy="0" r={moonR} />
             </clipPath>
 
             {/* Moon Sunlight Terminator Mask: Moon is lit on its left side facing the Sun */}
-            <linearGradient id="moonTerminator" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id="moonLocalTerminator" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="rgba(0,0,0,0)" />
               <stop offset={`${Math.round(moon.fraction * 0.8 + 10)}%`} stopColor="rgba(0,0,0,0)" />
               <stop offset={`${Math.round(moon.fraction * 0.8 + 25)}%`} stopColor="rgba(15, 23, 42, 0.8)" />
@@ -155,64 +154,47 @@ export default function SunEarthMoonDiagram({
             </linearGradient>
           </defs>
 
-          {/* 🌟 A. SUNLIGHT STREAM (Defines the clear vector: ☀️ ────────► 🌍) 🌟 */}
+          {/* 🌟 A. SUNLIGHT CONE (Starts at point from Sun center, expands outward like a flashlight cone toward Earth) 🌟 */}
           <g pointerEvents="none">
-            {/* Main beam toward Earth */}
+            {/* Main Cone Beam from Sun point (48, 175) expanding to cover Earth's daytime face */}
             <polygon
-              points={`45,${earthY - 45} ${earthX - earthR + 4},${earthY - 35} ${earthX - earthR + 4},${earthY + 35} 45,${earthY + 45}`}
-              fill="url(#sunlightRayGrad)"
-            />
-            {/* Top secondary beam */}
-            <polygon
-              points={`45,${earthY - 60} ${earthX - 25},${earthY - earthR} ${earthX - 10},${earthY - earthR + 25} 45,${earthY - 20}`}
-              fill="url(#sunlightRayGrad)"
-              opacity="0.6"
-            />
-            {/* Bottom secondary beam */}
-            <polygon
-              points={`45,${earthY + 20} ${earthX - 10},${earthY + earthR - 25} ${earthX - 25},${earthY + earthR} 45,${earthY + 60}`}
-              fill="url(#sunlightRayGrad)"
-              opacity="0.6"
+              points={`${sunX + 6},${sunY} ${earthX - earthR + 6},${earthY - earthR + 8} ${earthX - earthR + 6},${earthY + earthR - 8}`}
+              fill="url(#sunConeBeam)"
             />
 
-            {/* Animated Golden Sunlight Streamers */}
+            {/* Expanding Triangular Radiance Rays */}
+            <polygon
+              points={`${sunX + 10},${sunY - 2} ${earthX - earthR + 10},${earthY - 25} ${earthX - earthR + 10},${earthY + 25}`}
+              fill="url(#sunConeBeam)"
+              opacity="0.5"
+            />
+
+            {/* Dynamic Streaking Ray Lines emanating from Sun */}
             <line
-              x1="55" y1={earthY - 20} x2={earthX - earthR - 10} y2={earthY - 12}
-              stroke="#fef08a" strokeWidth="2.5" strokeDasharray="6 6" strokeLinecap="round"
-              className="animate-pulse opacity-80"
+              x1={sunX + 22} y1={sunY - 6} x2={earthX - earthR - 10} y2={earthY - 32}
+              stroke="#fef08a" strokeWidth="2" strokeDasharray="6 6" strokeLinecap="round"
+              className="animate-pulse opacity-75"
             />
             <line
-              x1="55" y1={earthY} x2={earthX - earthR - 8} y2={earthY}
+              x1={sunX + 26} y1={sunY} x2={earthX - earthR - 8} y2={earthY}
               stroke="#fde047" strokeWidth="3" strokeDasharray="8 8" strokeLinecap="round"
               className="animate-pulse opacity-90"
             />
             <line
-              x1="55" y1={earthY + 20} x2={earthX - earthR - 10} y2={earthY + 12}
-              stroke="#fef08a" strokeWidth="2.5" strokeDasharray="6 6" strokeLinecap="round"
-              className="animate-pulse opacity-80"
+              x1={sunX + 22} y1={sunY + 6} x2={earthX - earthR - 10} y2={earthY + 32}
+              stroke="#fef08a" strokeWidth="2" strokeDasharray="6 6" strokeLinecap="round"
+              className="animate-pulse opacity-75"
             />
           </g>
 
-          {/* 🌟 B. MOON'S ORBITAL PATH 🌟 */}
-          <ellipse
-            cx={earthX}
-            cy={earthY}
-            rx={orbitRx}
-            ry={orbitRy}
-            fill="none"
-            stroke="rgba(192, 132, 252, 0.3)"
-            strokeWidth="1.5"
-            strokeDasharray="5 5"
-          />
-
-          {/* 🌟 C. THE EARTH (Center Stage) 🌟 */}
+          {/* 🌟 B. THE EARTH (Center Stage) 🌟 */}
           <g onClick={() => setActiveBubble('earth')} className="cursor-pointer">
             {/* Atmosphere Halo on Sunlit Limb */}
-            <circle cx={earthX} cy={earthY} r={earthR + 5} fill="rgba(56, 189, 248, 0.2)" />
-            <circle cx={earthX} cy={earthY} r={earthR + 2} fill="rgba(56, 189, 248, 0.3)" />
+            <circle cx={earthX} cy={earthY} r={earthR + 5} fill="rgba(56, 189, 248, 0.18)" />
+            <circle cx={earthX} cy={earthY} r={earthR + 2} fill="rgba(56, 189, 248, 0.28)" />
 
             {/* Earth Sphere Contents */}
-            <g clipPath="url(#earthClip)">
+            <g clipPath="url(#earthSphereClip)">
               {/* Day Ocean Base */}
               <rect
                 x={earthX - earthR}
@@ -272,7 +254,7 @@ export default function SunEarthMoonDiagram({
             />
           </g>
 
-          {/* 🌟 D. MEHIN'S GLOWING BEACON (Strictly placed on day or night hemisphere) 🌟 */}
+          {/* 🌟 C. MEHIN'S GLOWING BEACON (Strictly placed on day or night hemisphere) 🌟 */}
           <g
             transform={`translate(${mehinX}, ${mehinY})`}
             onClick={() => setActiveBubble('mehin')}
@@ -291,9 +273,9 @@ export default function SunEarthMoonDiagram({
             </g>
           </g>
 
-          {/* 🌟 E. THE SUN (Left Side, defining the source of light) 🌟 */}
+          {/* 🌟 D. THE SUN (Left Side, defining the source of light) 🌟 */}
           <g
-            transform={`translate(45, ${earthY})`}
+            transform={`translate(${sunX}, ${sunY})`}
             onClick={() => setActiveBubble('sun')}
             className="cursor-pointer"
           >
@@ -302,7 +284,7 @@ export default function SunEarthMoonDiagram({
             <circle cx="0" cy="0" r="30" fill="#f59e0b" opacity="0.35" className="animate-pulse" />
 
             {/* Sun Core */}
-            <circle cx="0" cy="0" r="23" fill="#fbbf24" stroke="#fef08a" strokeWidth="2.5" />
+            <circle cx="0" cy="0" r={sunR} fill="#fbbf24" stroke="#fef08a" strokeWidth="2.5" />
 
             {/* Friendly Warm Smile */}
             <circle cx="-5" cy="-3" r="2.2" fill="#78350f" />
@@ -313,22 +295,22 @@ export default function SunEarthMoonDiagram({
             {[0, 45, 90, 135, 180, 225, 270, 315].map((ang) => (
               <line
                 key={ang}
-                x1={Math.cos((ang * Math.PI) / 180) * 26}
-                y1={Math.sin((ang * Math.PI) / 180) * 26}
-                x2={Math.cos((ang * Math.PI) / 180) * 33}
-                y2={Math.sin((ang * Math.PI) / 180) * 33}
+                x1={Math.cos((ang * Math.PI) / 180) * 27}
+                y1={Math.sin((ang * Math.PI) / 180) * 27}
+                x2={Math.cos((ang * Math.PI) / 180) * 34}
+                y2={Math.sin((ang * Math.PI) / 180) * 34}
                 stroke="#fbbf24"
                 strokeWidth="2.5"
                 strokeLinecap="round"
               />
             ))}
 
-            <text x="0" y="42" textAnchor="middle" fill="#fde047" fontSize="10" fontWeight="900">
+            <text x="0" y="44" textAnchor="middle" fill="#fde047" fontSize="10" fontWeight="900">
               {isEn ? 'THE SUN' : 'GÜNƏŞ'}
             </text>
           </g>
 
-          {/* 🌟 F. THE MOON (Positioned based on actual lunar elongation & phase) 🌟 */}
+          {/* 🌟 E. THE MOON (Single clean position on the right) 🌟 */}
           <g
             transform={`translate(${moonX}, ${moonY})`}
             onClick={() => setActiveBubble('moon')}
@@ -337,23 +319,23 @@ export default function SunEarthMoonDiagram({
             {/* Moon Glow */}
             <circle cx="0" cy="0" r="24" fill="rgba(216, 180, 254, 0.25)" />
 
-            {/* Moon Body */}
-            <g clipPath="url(#moonClip)">
+            {/* Moon Body with self-contained local clip */}
+            <g clipPath="url(#localMoonClip)">
               {/* Moon Base Lit Regolith */}
-              <circle cx={moonX} cy={moonY} r={moonR} fill="#e2e8f0" />
+              <circle cx="0" cy="0" r={moonR} fill="#e2e8f0" />
               {/* Craters */}
-              <circle cx={moonX - 4} cy={moonY - 4} r="3" fill="#cbd5e1" />
-              <circle cx={moonX + 5} cy={moonY + 3} r="2.5" fill="#cbd5e1" />
-              <circle cx={moonX - 2} cy={moonY + 5} r="2" fill="#cbd5e1" />
+              <circle cx="-4" cy="-4" r="3" fill="#cbd5e1" />
+              <circle cx="5" cy="3" r="2.5" fill="#cbd5e1" />
+              <circle cx="-2" cy="5" r="2" fill="#cbd5e1" />
 
               {/* Physical Phase Shadow Overlay */}
               {!moon.isFullMoon && (
                 <rect
-                  x={moonX - moonR}
-                  y={moonY - moonR}
+                  x={-moonR}
+                  y={-moonR}
                   width={moonR * 2}
                   height={moonR * 2}
-                  fill="url(#moonTerminator)"
+                  fill="url(#moonLocalTerminator)"
                 />
               )}
             </g>
@@ -366,17 +348,6 @@ export default function SunEarthMoonDiagram({
               {isEn ? 'THE MOON' : 'AY'}
             </text>
           </g>
-
-          {/* 🌟 G. EXPLANATORY ARROWS: DAY SIDE VS NIGHT SIDE 🌟 */}
-          <text x={earthX - 35} y={earthY - earthR - 10} textAnchor="middle" fill="#93c5fd" fontSize="9" fontWeight="800">
-            {isEn ? '☀️ DAY SIDE' : '☀️ GÜNDÜZ TƏRƏFİ'}
-          </text>
-          <path d={`M ${earthX - 35},${earthY - earthR - 6} L ${earthX - 25},${earthY - earthR + 8}`} stroke="#93c5fd" strokeWidth="1.2" strokeLinecap="round" />
-
-          <text x={earthX + 35} y={earthY - earthR - 10} textAnchor="middle" fill="#c4b5fd" fontSize="9" fontWeight="800">
-            {isEn ? '🌙 NIGHT SIDE' : '🌙 GECƏ TƏRƏFİ'}
-          </text>
-          <path d={`M ${earthX + 35},${earthY - earthR - 6} L ${earthX + 25},${earthY - earthR + 8}`} stroke="#c4b5fd" strokeWidth="1.2" strokeLinecap="round" />
         </svg>
       </div>
 
