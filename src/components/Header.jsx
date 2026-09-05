@@ -1,6 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Settings, Sparkles, MapPin, Globe } from 'lucide-react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Settings, Sparkles, MapPin, Globe, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export default function Header() {
@@ -14,6 +15,7 @@ export default function Header() {
     setIsSettingsOpen,
   } = useApp();
 
+  const [isAvatarZoomed, setIsAvatarZoomed] = useState(false);
   const isEn = language === 'en';
 
   const today = new Date();
@@ -31,8 +33,9 @@ export default function Header() {
         <div className="flex items-center gap-2.5 min-w-0">
           <motion.button
             whileTap={{ scale: 0.9 }}
-            onClick={() => setIsSettingsOpen(true)}
-            className="cursor-pointer relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-md shrink-0 border border-white/20 overflow-hidden select-none"
+            onClick={() => setIsAvatarZoomed(true)}
+            className="cursor-pointer relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-md shrink-0 border border-white/20 overflow-hidden select-none hover:ring-2 hover:ring-pink-400/50 transition-all"
+            title={isEn ? "Tap to enlarge photo" : "Şəkli böyütmək üçün toxun"}
           >
             {activeAvatarObj.isCustom && activeAvatarObj.photoUrl ? (
               <img src={activeAvatarObj.photoUrl} alt="Explorer" className="w-full h-full object-cover" />
@@ -87,6 +90,75 @@ export default function Header() {
         </div>
 
       </div>
+
+      {/* Enlarged Avatar Lightbox Modal - Tapping anywhere closes it */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isAvatarZoomed && (
+            <div
+              className="fixed inset-0 z-[99999] flex items-center justify-center p-4 cursor-pointer"
+              onClick={() => setIsAvatarZoomed(false)}
+            >
+              {/* Fullscreen Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-slate-950/85 backdrop-blur-md -z-10"
+              />
+
+              {/* Enlarged Avatar Card */}
+              <motion.div
+                initial={{ scale: 0.7, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.7, opacity: 0, y: 20 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                className="relative flex flex-col items-center p-6 sm:p-7 rounded-3xl bg-slate-900/95 border-2 border-pink-500/50 shadow-2xl max-w-xs w-full text-center"
+                onClick={() => setIsAvatarZoomed(false)}
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsAvatarZoomed(false)}
+                  className="absolute top-3.5 right-3.5 p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                {/* Big Avatar Frame */}
+                <div className="relative w-48 h-48 sm:w-56 sm:h-56 rounded-full p-1.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-400 shadow-2xl mb-4 overflow-hidden flex items-center justify-center ring-4 ring-pink-500/30">
+                  {activeAvatarObj.isCustom && activeAvatarObj.photoUrl ? (
+                    <img
+                      src={activeAvatarObj.photoUrl}
+                      alt={explorerName}
+                      className="w-full h-full object-cover rounded-full select-none"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-full bg-slate-850 flex items-center justify-center text-7xl sm:text-8xl select-none bg-slate-800">
+                      {activeAvatarObj.emoji}
+                    </div>
+                  )}
+                </div>
+
+                {/* Role Badge & Name */}
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-xs font-black uppercase tracking-wider text-pink-300">
+                    {isEn ? 'Space Hero' : 'Ulduz Qəhrəmanı'}
+                  </span>
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  {explorerName}
+                </h2>
+                <p className="text-[11px] text-slate-400 mt-2 font-medium">
+                  {isEn ? 'Tap anywhere to close' : 'Bağlamaq üçün ekrana toxunun'}
+                </p>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </header>
   );
 }
