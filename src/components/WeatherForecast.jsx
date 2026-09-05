@@ -165,12 +165,15 @@ export default function WeatherForecast() {
         {/* Interactive Detail Modal when any day is tapped */}
         <AnimatePresence>
           {selectedDay && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div 
+              onClick={() => setSelectedDay(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 cursor-pointer"
+            >
+              {/* Backdrop */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                onClick={() => setSelectedDay(null)}
                 className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"
               />
 
@@ -178,11 +181,12 @@ export default function WeatherForecast() {
                 initial={{ scale: 0.9, opacity: 0, y: 15 }}
                 animate={{ scale: 1, opacity: 1, y: 0 }}
                 exit={{ scale: 0.9, opacity: 0, y: 15 }}
-                className="relative z-10 w-full max-w-sm rounded-3xl p-5 bg-slate-900 border border-cyan-500/40 shadow-2xl text-white"
+                onClick={(e) => e.stopPropagation()}
+                className="relative z-10 w-full max-w-sm rounded-3xl p-5 bg-slate-900 border border-cyan-500/40 shadow-2xl text-white cursor-default"
               >
                 <button
                   onClick={() => setSelectedDay(null)}
-                  className="absolute top-4 right-4 p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white"
+                  className="absolute top-4 right-4 p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>

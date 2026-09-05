@@ -60,7 +60,7 @@ export default function SettingsModal() {
             <div className="flex items-center gap-2">
               <span className="text-lg">⚙️</span>
               <h2 className="text-sm sm:text-base font-black tracking-tight">
-                {isEn ? 'Explorer Settings' : 'Kəşfiyyatçı Ayarları'}
+                {isEn ? 'My Space Profile' : 'Mənim Kosmik Profilim'}
               </h2>
             </div>
             <button
@@ -79,7 +79,7 @@ export default function SettingsModal() {
               <div className="flex items-center justify-between mb-1">
                 <label className="text-[10px] font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1">
                   <User className="w-3 h-3 text-pink-400" />
-                  <span>{isEn ? "Explorer Name" : 'Kəşfiyyatçının Adı'}</span>
+                  <span>{isEn ? "Your Name" : 'Sənin Adın'}</span>
                 </label>
               </div>
               <input

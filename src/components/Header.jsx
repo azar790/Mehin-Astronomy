@@ -48,7 +48,7 @@ export default function Header() {
           <div className="min-w-0">
             <div className="flex items-center gap-1">
               <span className="text-[10px] uppercase tracking-wider font-black text-purple-300 truncate">
-                {isEn ? 'Explorer' : 'Kəşfiyyatçı'}
+                {isEn ? 'Space Hero' : 'Ulduz Qəhrəmanı'}
               </span>
               <Sparkles className="w-3 h-3 text-amber-300 shrink-0" />
             </div>
