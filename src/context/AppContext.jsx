@@ -25,9 +25,8 @@ export const THEMES = [
     name_en: 'Cosmic Night 🌌',
     name_az: 'Kosmik Gecə 🌌',
     bgGradient: 'from-slate-950 via-[#0a0720] to-[#050414]',
-    cardBg: 'bg-slate-900/80 border-purple-500/30',
-    primary: 'purple',
-    accent: 'from-purple-600 to-pink-500',
+    scrollAccent: 'from-purple-900/50 via-slate-900/80 to-slate-950',
+    cardBg: 'bg-slate-900/85 border-purple-500/30',
     colorHex: '#9333ea',
   },
   {
@@ -35,9 +34,8 @@ export const THEMES = [
     name_en: 'Sunset Glow 🌇',
     name_az: 'Qızılı Qürub 🌇',
     bgGradient: 'from-[#1e0d2d] via-[#2d1124] to-[#12081f]',
-    cardBg: 'bg-amber-950/40 border-amber-500/30',
-    primary: 'amber',
-    accent: 'from-amber-500 via-rose-500 to-purple-600',
+    scrollAccent: 'from-amber-900/50 via-rose-900/60 to-purple-950',
+    cardBg: 'bg-[#230f24]/90 border-amber-500/40',
     colorHex: '#f59e0b',
   },
   {
@@ -45,9 +43,8 @@ export const THEMES = [
     name_en: 'Emerald Aurora 💚',
     name_az: 'Zümrüd Parıltısı 💚',
     bgGradient: 'from-[#031c18] via-[#052620] to-[#021310]',
-    cardBg: 'bg-emerald-950/40 border-emerald-500/30',
-    primary: 'emerald',
-    accent: 'from-emerald-500 to-teal-400',
+    scrollAccent: 'from-emerald-950/60 via-teal-950/70 to-slate-950',
+    cardBg: 'bg-[#04241d]/90 border-emerald-500/40',
     colorHex: '#10b981',
   },
   {
@@ -55,79 +52,96 @@ export const THEMES = [
     name_en: 'Star Candy 🦄',
     name_az: 'Ulduz Nağılı 🦄',
     bgGradient: 'from-[#1f0b24] via-[#280d2e] to-[#120616]',
-    cardBg: 'bg-pink-950/40 border-pink-500/30',
-    primary: 'pink',
-    accent: 'from-pink-500 via-fuchsia-500 to-indigo-500',
+    scrollAccent: 'from-pink-950/60 via-fuchsia-950/70 to-[#120616]',
+    cardBg: 'bg-[#260e2c]/90 border-pink-500/40',
     colorHex: '#ec4899',
   },
   {
     id: 'daylight',
     name_en: 'Sunny Sky ☀️',
     name_az: 'Açıq Səma ☀️',
-    bgGradient: 'from-[#0b2545] via-[#134074] to-[#081c36]',
-    cardBg: 'bg-sky-950/50 border-sky-400/30',
-    primary: 'sky',
-    accent: 'from-sky-400 via-cyan-400 to-amber-300',
+    bgGradient: 'from-[#08203e] via-[#103b68] to-[#05162a]',
+    scrollAccent: 'from-sky-950/60 via-blue-950/70 to-slate-950',
+    cardBg: 'bg-[#0a2747]/90 border-sky-400/40',
     colorHex: '#38bdf8',
   },
 ];
 
+function safeGet(key, fallback) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeSet(key, val) {
+  try {
+    localStorage.setItem(key, val);
+  } catch (e) {
+    console.warn('localStorage error:', e);
+  }
+}
+
 export function AppProvider({ children }) {
-  // Explorer Name (Default Lilia or Mehin)
-  const [explorerName, setExplorerName] = useState(() => {
-    return localStorage.getItem('cosmic_explorer_name') || 'Lilia';
+  // Explorer Name
+  const [explorerName, setExplorerNameState] = useState(() => {
+    return safeGet('cosmic_explorer_name', 'Mehin');
   });
+
+  const setExplorerName = (newName) => {
+    const trimmed = (newName || '').trim();
+    if (trimmed) {
+      setExplorerNameState(trimmed);
+      safeSet('cosmic_explorer_name', trimmed);
+    }
+  };
 
   // Avatar
-  const [avatar, setAvatar] = useState(() => {
-    return localStorage.getItem('cosmic_avatar') || 'astronaut';
+  const [avatar, setAvatarState] = useState(() => {
+    return safeGet('cosmic_avatar', 'astronaut');
   });
+  const setAvatar = (newAvatar) => {
+    setAvatarState(newAvatar);
+    safeSet('cosmic_avatar', newAvatar);
+  };
 
   // Theme
-  const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('cosmic_theme') || 'cosmic';
+  const [theme, setThemeState] = useState(() => {
+    return safeGet('cosmic_theme', 'cosmic');
   });
+  const setTheme = (newTheme) => {
+    setThemeState(newTheme);
+    safeSet('cosmic_theme', newTheme);
+  };
 
-  // Language: 'en' | 'az'
-  const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('cosmic_language') || 'en';
+  // Language
+  const [language, setLanguageState] = useState(() => {
+    return safeGet('cosmic_language', 'az'); // Default to Azerbaijani or toggle
   });
+  const setLanguage = (newLang) => {
+    setLanguageState(newLang);
+    safeSet('cosmic_language', newLang);
+  };
 
-  // Selected City / Coordinates
-  const [city, setCity] = useState(() => {
-    const saved = localStorage.getItem('cosmic_city');
+  // City
+  const [city, setCityState] = useState(() => {
+    const saved = safeGet('cosmic_city', null);
     if (saved) {
-      try { return JSON.parse(saved); } catch (e) { /* fallback */ }
+      try { return JSON.parse(saved); } catch (e) {}
     }
     return CITIES_LIST[0]; // Baku default
   });
+  const setCity = (newCity) => {
+    setCityState(newCity);
+    safeSet('cosmic_city', JSON.stringify(newCity));
+  };
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [geoStatus, setGeoStatus] = useState('idle');
 
-  // Persist settings
-  useEffect(() => {
-    localStorage.setItem('cosmic_explorer_name', explorerName);
-  }, [explorerName]);
-
-  useEffect(() => {
-    localStorage.setItem('cosmic_avatar', avatar);
-  }, [avatar]);
-
-  useEffect(() => {
-    localStorage.setItem('cosmic_theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    localStorage.setItem('cosmic_language', language);
-  }, [language]);
-
-  useEffect(() => {
-    localStorage.setItem('cosmic_city', JSON.stringify(city));
-  }, [city]);
-
   const toggleLanguage = () => {
-    setLanguage(prev => (prev === 'en' ? 'az' : 'en'));
+    setLanguage(language === 'en' ? 'az' : 'en');
   };
 
   const detectLocation = () => {
@@ -150,7 +164,6 @@ export function AppProvider({ children }) {
         setGeoStatus('success');
       },
       (err) => {
-        console.warn('Geolocation denied or failed, using city fallback:', err.message);
         setGeoStatus('denied');
       },
       { timeout: 10000 }

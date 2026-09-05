@@ -1,51 +1,61 @@
 import React, { useMemo } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
 export default function StarryBackground() {
   const { activeThemeObj, theme } = useApp();
+  const { scrollYProgress } = useScroll();
 
-  // 25 lightweight stars with pure CSS animations (hardware-accelerated, 0% CPU overhead)
+  // Dynamically shift ambient glow color as user scrolls down!
+  const scrollHueShift = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [
+      'rgba(147, 51, 234, 0.18)',  // Purple top
+      'rgba(236, 72, 153, 0.22)',  // Pink mid
+      'rgba(20, 184, 166, 0.25)',  // Emerald/Teal bottom
+    ]
+  );
+
+  const scrollGlowOffset = useTransform(scrollYProgress, [0, 1], [0, 120]);
+
+  // 24 animated stars
   const stars = useMemo(() => {
     return Array.from({ length: 24 }).map((_, i) => ({
       id: i,
       x: Math.floor((i * 17) % 100),
       y: Math.floor((i * 23) % 100),
-      size: (i % 2 === 0 ? 2 : 1.5),
-      delay: (i % 4) * 0.8,
-      duration: 2.5 + (i % 3),
+      size: (i % 2 === 0 ? 2.5 : 1.5),
+      delay: (i % 4) * 0.7,
+      duration: 2 + (i % 3),
       color: i % 4 === 0 ? '#fbcfe8' : i % 5 === 0 ? '#67e8f9' : '#ffffff',
     }));
   }, []);
 
-  // Theme radial glow styles without slow CSS filter blurs
-  const radialGlows = useMemo(() => {
-    switch (theme) {
-      case 'sunset':
-        return 'radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(244, 63, 94, 0.15) 0%, transparent 50%)';
-      case 'aurora':
-        return 'radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.15) 0%, transparent 50%)';
-      case 'candy':
-        return 'radial-gradient(circle at 20% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%)';
-      case 'daylight':
-        return 'radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.12) 0%, transparent 50%)';
-      case 'cosmic':
-      default:
-        return 'radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)';
-    }
-  }, [theme]);
-
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 will-change-transform">
-      {/* Background Gradient */}
-      <div className={`absolute inset-0 bg-gradient-to-b ${activeThemeObj.bgGradient} transition-colors duration-500`} />
+      {/* Base Theme Gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-b ${activeThemeObj.bgGradient} transition-colors duration-700`} />
 
-      {/* GPU Radial Glows (Instant 60fps render on mobile) */}
-      <div
-        className="absolute inset-0 transition-all duration-500"
-        style={{ backgroundImage: radialGlows }}
+      {/* Dynamic Scroll-Reactive Glow Layer (Shifts color as user scrolls down) */}
+      <motion.div
+        className="absolute inset-0 transition-opacity duration-300"
+        style={{
+          background: `radial-gradient(circle at 50% 30%, ${scrollHueShift.get()}, transparent 70%)`,
+        }}
       />
 
-      {/* Lightweight CSS Twinkling Stars */}
+      {/* Moving Ambient Nebula Aura */}
+      <motion.div
+        style={{ y: scrollGlowOffset }}
+        className="absolute top-1/4 -right-10 w-72 h-72 rounded-full bg-pink-500/15 blur-[80px]"
+      />
+      <motion.div
+        style={{ y: scrollGlowOffset }}
+        className="absolute bottom-1/4 -left-10 w-72 h-72 rounded-full bg-indigo-500/15 blur-[80px]"
+      />
+
+      {/* Twinkling Stars */}
       {stars.map((s) => (
         <div
           key={s.id}
@@ -56,16 +66,23 @@ export default function StarryBackground() {
             width: `${s.size}px`,
             height: `${s.size}px`,
             backgroundColor: s.color,
+            boxShadow: `0 0 6px ${s.color}`,
             animationDelay: `${s.delay}s`,
             animationDuration: `${s.duration}s`,
           }}
         />
       ))}
 
-      {/* Smooth Flying Mascot */}
-      <div className="absolute text-xl animate-float top-16 right-4 select-none opacity-80">
+      {/* Playful Floating Mascot that reacts to scroll */}
+      <motion.div
+        style={{
+          y: useTransform(scrollYProgress, [0, 1], [0, 200]),
+          rotate: useTransform(scrollYProgress, [0, 1], [0, 45]),
+        }}
+        className="absolute text-2xl top-16 right-4 select-none opacity-85 filter drop-shadow-[0_0_8px_rgba(255,200,0,0.5)]"
+      >
         {theme === 'daylight' ? '🕊️' : '🚀'}
-      </div>
+      </motion.div>
     </div>
   );
 }
