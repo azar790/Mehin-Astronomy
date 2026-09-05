@@ -1,11 +1,28 @@
-import React, { useMemo } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useMemo, useState, useEffect } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 import Astronaut from './Astronaut';
+
+// Three rotating cosmic spectacles:
+// 0: Astronaut floating across waving
+// 1: Space Rocket zooming across with fiery thrusters
+// 2: Perseids Meteor Shower (multiple shooting stars falling together)
+const COSMIC_EVENTS = ['astronaut', 'rocket', 'meteors'];
 
 export default function StarryBackground() {
   const { activeThemeObj } = useApp();
   const { scrollYProgress } = useScroll();
+  const [eventIndex, setEventIndex] = useState(0);
+
+  // Rotate through cosmic events every 8 seconds in perfect turns!
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setEventIndex((prev) => (prev + 1) % COSMIC_EVENTS.length);
+    }, 8500);
+    return () => clearInterval(timer);
+  }, []);
+
+  const currentEvent = COSMIC_EVENTS[eventIndex];
 
   // Vibrant color shift on scroll
   const scrollHue = useTransform(
@@ -18,7 +35,7 @@ export default function StarryBackground() {
     ]
   );
 
-  // High-visibility stars
+  // High-visibility twinkling background stars
   const stars = useMemo(() => {
     return [
       { id: 1, x: 8, y: 12, size: 5, color: '#fef08a', duration: 2.2, delay: 0 },
@@ -70,24 +87,7 @@ export default function StarryBackground() {
         className="absolute bottom-[20%] right-[-15%] w-88 h-88 rounded-full bg-gradient-to-bl from-cyan-500/30 to-indigo-600/25 blur-2xl"
       />
 
-      {/* Shooting Star Comet */}
-      <motion.div
-        className="absolute w-36 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-white rounded-full rotate-[-40deg] filter drop-shadow-[0_0_8px_#38bdf8]"
-        initial={{ x: '110vw', y: '5vh', opacity: 0 }}
-        animate={{
-          x: ['100vw', '-20vw'],
-          y: ['5vh', '70vh'],
-          opacity: [0, 1, 1, 0],
-        }}
-        transition={{
-          duration: 1.4,
-          repeat: Infinity,
-          repeatDelay: 6,
-          ease: 'easeOut',
-        }}
-      />
-
-      {/* High-Visibility Sparkling Stars */}
+      {/* Permanent High-Visibility Sparkling Stars with Halos */}
       {stars.map((s) => (
         <motion.div
           key={s.id}
@@ -113,22 +113,134 @@ export default function StarryBackground() {
         />
       ))}
 
-      {/* 🧑‍🚀 FULL-BODY ASTRONAUT WITH MOVING HANDS & FEET ROAMING ACROSS THE ENTIRE SCREEN */}
-      <motion.div
-        className="absolute z-0 will-change-transform"
-        animate={{
-          x: ['5vw', '70vw', '55vw', '10vw', '5vw'],
-          y: ['12vh', '32vh', '68vh', '48vh', '12vh'],
-          rotate: [-8, 14, -12, 10, -8],
-        }}
-        transition={{
-          duration: 24,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      >
-        <Astronaut />
-      </motion.div>
+      {/* ======================================================== */}
+      {/* 🎭 NÖVBƏLİ GƏLİB-GEDƏN KOSMİK ŞOU (ASTRONAUT, ROCKET, METEORS) */}
+      {/* ======================================================== */}
+      <AnimatePresence mode="wait">
+        
+        {/* 1. NÖVBƏ: ASTRONAVT (SLOWLY FLOATS ACROSS, WAVING) */}
+        {currentEvent === 'astronaut' && (
+          <motion.div
+            key="astronaut-turn"
+            initial={{ x: '-25vw', y: '30vh', opacity: 0, rotate: -15 }}
+            animate={{
+              x: '115vw',
+              y: ['25vh', '15vh', '45vh', '20vh'],
+              opacity: [0, 1, 1, 1, 0],
+              rotate: [-15, 10, -8, 12, -15],
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 8,
+              ease: 'easeInOut',
+            }}
+            className="absolute z-0 will-change-transform"
+          >
+            <Astronaut />
+          </motion.div>
+        )}
+
+        {/* 2. NÖVBƏ: PARLAQ RAKET (ZOOMS ACROSS WITH FLAME TRAIL) */}
+        {currentEvent === 'rocket' && (
+          <motion.div
+            key="rocket-turn"
+            initial={{ x: '-20vw', y: '75vh', opacity: 0, scale: 0.8 }}
+            animate={{
+              x: '115vw',
+              y: '-15vh',
+              opacity: [0, 1, 1, 1, 0],
+              scale: [0.8, 1.2, 1.2, 0.9],
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 5,
+              ease: 'easeInOut',
+            }}
+            className="absolute z-0 flex items-center select-none filter drop-shadow-[0_0_20px_rgba(251,191,36,0.8)]"
+          >
+            {/* Rocket SVG with animated exhaust fire */}
+            <div className="relative rotate-[42deg]">
+              <span className="text-5xl sm:text-6xl inline-block">🚀</span>
+              {/* Glowing fiery engine thrust */}
+              <motion.div
+                animate={{ scale: [0.8, 1.4, 0.8], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 0.3, repeat: Infinity }}
+                className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-4 h-8 bg-gradient-to-b from-amber-400 via-rose-500 to-transparent rounded-full blur-[2px]"
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* 3. NÖVBƏ: METEOR YAĞIŞI (CASCADE OF SHOOTING STARS FALLING TOGETHER) */}
+        {currentEvent === 'meteors' && (
+          <motion.div
+            key="meteors-turn"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-0"
+          >
+            {/* Meteor 1 (Cyan bright) */}
+            <motion.div
+              className="absolute w-44 h-1.5 bg-gradient-to-r from-transparent via-cyan-300 to-white rounded-full rotate-[-38deg] filter drop-shadow-[0_0_10px_#38bdf8]"
+              initial={{ x: '105vw', y: '5vh', opacity: 0 }}
+              animate={{
+                x: ['95vw', '-15vw'],
+                y: ['5vh', '70vh'],
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{ duration: 1.3, ease: 'easeOut', delay: 0.2 }}
+            />
+
+            {/* Meteor 2 (Golden spark) */}
+            <motion.div
+              className="absolute w-36 h-1.5 bg-gradient-to-r from-transparent via-amber-300 to-yellow-100 rounded-full rotate-[-35deg] filter drop-shadow-[0_0_10px_#fbbf24]"
+              initial={{ x: '95vw', y: '25vh', opacity: 0 }}
+              animate={{
+                x: ['85vw', '-20vw'],
+                y: ['25vh', '85vh'],
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{ duration: 1.4, ease: 'easeOut', delay: 1.1 }}
+            />
+
+            {/* Meteor 3 (Neon pink trail) */}
+            <motion.div
+              className="absolute w-48 h-1.5 bg-gradient-to-r from-transparent via-pink-400 to-white rounded-full rotate-[-40deg] filter drop-shadow-[0_0_12px_#ec4899]"
+              initial={{ x: '110vw', y: '12vh', opacity: 0 }}
+              animate={{
+                x: ['100vw', '-10vw'],
+                y: ['12vh', '78vh'],
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{ duration: 1.2, ease: 'easeOut', delay: 2.2 }}
+            />
+
+            {/* Meteor 4 (White fast comet) */}
+            <motion.div
+              className="absolute w-40 h-1.5 bg-gradient-to-r from-transparent via-indigo-200 to-white rounded-full rotate-[-36deg] filter drop-shadow-[0_0_10px_#818cf8]"
+              initial={{ x: '85vw', y: '40vh', opacity: 0 }}
+              animate={{
+                x: ['75vw', '-25vw'],
+                y: ['40vh', '95vh'],
+                opacity: [0, 1, 1, 0],
+              }}
+              transition={{ duration: 1.5, ease: 'easeOut', delay: 3.2 }}
+            />
+
+            {/* Shower announcement badge fading in gently */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: [0, 0.9, 0], y: [-5, 5] }}
+              transition={{ duration: 3.5, delay: 0.5 }}
+              className="absolute top-16 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-purple-950/60 border border-cyan-400/40 text-cyan-200 text-xs font-black shadow-lg"
+            >
+              🌠 Meteor Yağışı! ✨
+            </motion.div>
+          </motion.div>
+        )}
+
+      </AnimatePresence>
 
     </div>
   );
