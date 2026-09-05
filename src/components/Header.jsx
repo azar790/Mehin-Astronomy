@@ -32,8 +32,12 @@ export default function Header() {
         {/* Explorer Avatar & Name */}
         <div className="flex items-center gap-2.5 min-w-0">
           <motion.button
+            type="button"
             whileTap={{ scale: 0.9 }}
-            onClick={() => setIsAvatarZoomed(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsAvatarZoomed(true);
+            }}
             className="cursor-pointer relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-md shrink-0 border border-white/20 overflow-hidden select-none hover:ring-2 hover:ring-pink-400/50 transition-all"
             title={isEn ? "Tap to enlarge photo" : "Şəkli böyütmək üçün toxun"}
           >
