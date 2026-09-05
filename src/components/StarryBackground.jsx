@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
@@ -17,7 +17,7 @@ export default function StarryBackground() {
     ]
   );
 
-  // High-visibility, Retina-friendly sparkling stars (3px to 7px with glowing halos)
+  // High-visibility, Retina-friendly sparkling stars
   const stars = useMemo(() => {
     return [
       { id: 1, x: 8, y: 12, size: 5, color: '#fef08a', duration: 2.2, delay: 0 },
@@ -34,8 +34,6 @@ export default function StarryBackground() {
       { id: 12, x: 55, y: 42, size: 5, color: '#67e8f9', duration: 3.2, delay: 0.3 },
       { id: 13, x: 40, y: 62, size: 4, color: '#f472b6', duration: 2.3, delay: 1.6 },
       { id: 14, x: 62, y: 80, size: 5, color: '#ffffff', duration: 2.9, delay: 0.6 },
-      { id: 15, x: 94, y: 24, size: 4, color: '#67e8f9', duration: 2.5, delay: 1.0 },
-      { id: 16, x: 6, y: 82, size: 5, color: '#fef08a', duration: 3.1, delay: 0.5 },
     ];
   }, []);
 
@@ -50,12 +48,12 @@ export default function StarryBackground() {
         style={{ backgroundImage: scrollHue }}
       />
 
-      {/* Pulsing Cosmic Aurora Clouds (Vivid on mobile) */}
+      {/* Pulsing Cosmic Aurora Clouds */}
       <motion.div
         animate={{
           scale: [1, 1.25, 1],
           opacity: [0.35, 0.65, 0.35],
-          x: [0, 30, 0],
+          x: [0, 25, 0],
         }}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute top-[-5%] left-[-15%] w-80 h-80 rounded-full bg-gradient-to-tr from-purple-600/30 to-pink-500/25 blur-2xl"
@@ -65,13 +63,13 @@ export default function StarryBackground() {
         animate={{
           scale: [1, 1.3, 1],
           opacity: [0.3, 0.6, 0.3],
-          x: [0, -30, 0],
+          x: [0, -25, 0],
         }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
         className="absolute bottom-[20%] right-[-15%] w-88 h-88 rounded-full bg-gradient-to-bl from-cyan-500/30 to-indigo-600/25 blur-2xl"
       />
 
-      {/* Fast Shooting Star (Comet) that flies across the screen every 6 seconds! */}
+      {/* Fast Shooting Star (Comet) */}
       <motion.div
         className="absolute w-36 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-white rounded-full rotate-[-40deg] filter drop-shadow-[0_0_8px_#38bdf8]"
         initial={{ x: '110vw', y: '5vh', opacity: 0 }}
@@ -83,25 +81,7 @@ export default function StarryBackground() {
         transition={{
           duration: 1.4,
           repeat: Infinity,
-          repeatDelay: 5.5,
-          ease: 'easeOut',
-        }}
-      />
-
-      {/* Second Golden Shooting Star */}
-      <motion.div
-        className="absolute w-28 h-1 bg-gradient-to-r from-transparent via-amber-300 to-yellow-100 rounded-full rotate-[-30deg] filter drop-shadow-[0_0_6px_#f59e0b]"
-        initial={{ x: '105vw', y: '35vh', opacity: 0 }}
-        animate={{
-          x: ['95vw', '-15vw'],
-          y: ['35vh', '85vh'],
-          opacity: [0, 1, 1, 0],
-        }}
-        transition={{
-          duration: 1.2,
-          repeat: Infinity,
-          repeatDelay: 9,
-          delay: 3,
+          repeatDelay: 6,
           ease: 'easeOut',
         }}
       />
@@ -117,7 +97,7 @@ export default function StarryBackground() {
             width: `${s.size}px`,
             height: `${s.size}px`,
             backgroundColor: s.color,
-            boxShadow: `0 0 ${s.size * 2.5}px ${s.color}, 0 0 ${s.size * 4}px ${s.color}`,
+            boxShadow: `0 0 ${s.size * 2.5}px ${s.color}`,
           }}
           animate={{
             opacity: [0.3, 1, 0.3],
@@ -132,48 +112,58 @@ export default function StarryBackground() {
         />
       ))}
 
-      {/* Sparkle Emojis floating gently in corners */}
-      <motion.span
-        animate={{ y: [0, -15, 0], rotate: [0, 15, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute top-24 left-3 text-lg opacity-70 filter drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]"
-      >
-        ✨
-      </motion.span>
-
-      <motion.span
-        animate={{ y: [0, -18, 0], rotate: [0, -15, 0] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        className="absolute top-1/2 right-3 text-lg opacity-70 filter drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]"
-      >
-        ⭐
-      </motion.span>
-
-      <motion.span
-        animate={{ y: [0, -12, 0], scale: [1, 1.2, 1] }}
-        transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="absolute bottom-32 left-4 text-lg opacity-70 filter drop-shadow-[0_0_6px_rgba(255,255,255,0.8)]"
-      >
-        ✨
-      </motion.span>
-
-      {/* Cute Floating Astronaut / Rocket that drifts across */}
+      {/* 🧑‍🚀 MAIN FLOATING ASTRONAUT - SLOWLY MOVING UP AND DOWN IN ZERO GRAVITY */}
       <motion.div
-        className="absolute text-3xl filter drop-shadow-[0_0_12px_rgba(255,200,0,0.7)]"
-        initial={{ x: '-15vw', y: '18vh' }}
         animate={{
-          x: ['-15vw', '110vw'],
-          y: ['18vh', '40vh'],
-          rotate: [15, 30, 15],
+          y: [0, -32, 0],
+          rotate: [-6, 6, -6],
+          x: [0, 8, 0],
         }}
         transition={{
-          duration: 18,
+          duration: 5.5,
           repeat: Infinity,
-          ease: 'linear',
+          ease: 'easeInOut',
         }}
+        className="absolute top-28 right-3 sm:right-10 z-0 flex flex-col items-center select-none"
       >
-        {theme === 'daylight' ? '🕊️' : '🚀'}
+        {/* Glowing Astronaut Halo */}
+        <div className="relative">
+          <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-cyan-400/30 rounded-full blur-md animate-pulse" />
+          <div className="relative text-4xl sm:text-5xl filter drop-shadow-[0_0_16px_rgba(168,85,247,0.7)]">
+            🧑‍🚀
+          </div>
+        </div>
+
+        {/* Small Stardust Tail trailing under astronaut */}
+        <motion.div
+          animate={{
+            opacity: [0.3, 0.8, 0.3],
+            scale: [0.8, 1.1, 0.8],
+          }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="text-[10px] text-cyan-300 font-bold mt-1 tracking-widest uppercase opacity-75"
+        >
+          ✨ ☁️
+        </motion.div>
       </motion.div>
+
+      {/* Second Cute Space Explorer Pal in lower screen floating up and down */}
+      <motion.div
+        animate={{
+          y: [0, 28, 0],
+          rotate: [4, -5, 4],
+        }}
+        transition={{
+          duration: 6.5,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 1,
+        }}
+        className="absolute bottom-40 left-3 sm:left-8 z-0 text-3xl sm:text-4xl filter drop-shadow-[0_0_12px_rgba(6,182,212,0.6)] select-none opacity-80"
+      >
+        🛰️
+      </motion.div>
+
     </div>
   );
 }
