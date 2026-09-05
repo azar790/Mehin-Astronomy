@@ -19,13 +19,13 @@ export default function UpcomingRadar() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // Strictly filter events within the NEXT 7 DAYS
+  // Filter events within the upcoming 10 days (so events like 15 Sept show 10 days in advance)
   const upcomingEvents = eventsData
     .map(event => ({
       ...event,
       daysLeft: getEventDaysLeft(event.month, event.day),
     }))
-    .filter(event => event.daysLeft >= 0 && event.daysLeft <= 7)
+    .filter(event => event.daysLeft >= 0 && event.daysLeft <= 10)
     .sort((a, b) => a.daysLeft - b.daysLeft);
 
   const formatDaysBadge = (days) => {
@@ -49,11 +49,11 @@ export default function UpcomingRadar() {
             <span className="text-xl shrink-0 select-none">📅</span>
             <div className="min-w-0">
               <h2 className="text-sm sm:text-base font-black text-white tracking-tight flex items-center gap-1 truncate">
-                <span>{isEn ? 'Next 7 Days' : 'Növbəti 7 Gün'}</span>
+                <span>{isEn ? 'Upcoming Wonders' : 'Yaxınlaşan Hadisələr'}</span>
                 <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
               </h2>
               <p className="text-[11px] text-purple-200/80 font-medium truncate">
-                {isEn ? `This week for ${explorerName}` : `${explorerName} üçün bu həftə`}
+                {isEn ? `Special days for ${explorerName}` : `${explorerName} üçün xüsusi günlər`}
               </p>
             </div>
           </div>
