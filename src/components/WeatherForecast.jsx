@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CloudRain, Wind, Thermometer, Sparkles, X, Droplets } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -162,94 +163,97 @@ export default function WeatherForecast() {
           })}
         </div>
 
-        {/* Interactive Detail Modal when any day is tapped */}
-        <AnimatePresence>
-          {selectedDay && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              {/* Fullscreen Backdrop with both onClick and onTouchEnd for 100% mobile touch reliability */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+        {/* Interactive Detail Modal when any day is tapped - Rendered via Portal to break out of card container */}
+        {typeof document !== 'undefined' && createPortal(
+          <AnimatePresence>
+            {selectedDay && (
+              <div
+                className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
                 onClick={() => setSelectedDay(null)}
-                onTouchEnd={() => setSelectedDay(null)}
-                className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm cursor-pointer"
-              />
-
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0, y: 15 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                exit={{ scale: 0.9, opacity: 0, y: 15 }}
-                onClick={(e) => e.stopPropagation()}
-                onTouchEnd={(e) => e.stopPropagation()}
-                className="relative z-10 w-full max-w-sm rounded-3xl p-5 bg-slate-900 border border-cyan-500/40 shadow-2xl text-white select-none"
               >
-                <button
-                  type="button"
-                  onClick={() => setSelectedDay(null)}
-                  onTouchEnd={() => setSelectedDay(null)}
-                  className="absolute top-4 right-4 p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                {/* Fullscreen Backdrop - covers entire 100vw x 100vh of mobile device */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/80 backdrop-blur-sm cursor-pointer -z-10"
+                />
+
+                {/* Modal Window: stopPropagation ensures tapping inside won't close it */}
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0, y: 15 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  exit={{ scale: 0.9, opacity: 0, y: 15 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative z-10 w-full max-w-sm rounded-3xl p-5 bg-slate-900 border border-cyan-500/40 shadow-2xl text-white select-none"
                 >
-                  <X className="w-4 h-4" />
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedDay(null)}
+                    className="absolute top-4 right-4 p-1.5 rounded-xl bg-slate-800 text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
 
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-4xl select-none">{selectedDay.info.icon}</span>
-                  <div>
-                    <h3 className="text-base font-black text-white">
-                      {selectedDay.dayName} ({selectedDay.dateStr})
-                    </h3>
-                    <p className="text-xs text-purple-300 font-bold">
-                      {selectedDay.info.name}
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-4xl select-none">{selectedDay.info.icon}</span>
+                    <div>
+                      <h3 className="text-base font-black text-white">
+                        {selectedDay.dayName} ({selectedDay.dateStr})
+                      </h3>
+                      <p className="text-xs text-purple-300 font-bold">
+                        {selectedDay.info.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 my-3 text-xs">
+                    <div className="p-2.5 rounded-2xl bg-slate-800/80 border border-slate-700">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
+                        <Thermometer className="w-3 h-3 text-amber-400" />
+                        <span>{isEn ? 'Temperature' : 'Temperatur'}</span>
+                      </span>
+                      <p className="text-sm font-black text-white mt-1">
+                        {selectedDay.max}°C / {selectedDay.min}°C
+                      </p>
+                    </div>
+
+                    <div className="p-2.5 rounded-2xl bg-slate-800/80 border border-slate-700">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
+                        <CloudRain className="w-3 h-3 text-blue-400" />
+                        <span>{isEn ? 'Rain / Snow' : 'Yağış / Qar'}</span>
+                      </span>
+                      <p className="text-sm font-black text-cyan-300 mt-1">
+                        {selectedDay.rain}% {isEn ? 'chance' : 'ehtimal'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-2xl bg-indigo-950/60 border border-indigo-500/30 mb-3">
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="font-bold text-indigo-300 flex items-center gap-1">
+                        <Wind className="w-3.5 h-3.5 text-cyan-400" />
+                        <span>{isEn ? 'Wind Speed' : 'Küləyin Sürəti'}</span>
+                      </span>
+                      <span className="font-black text-white">
+                        {selectedDay.wind} km/s
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-200 font-semibold">
+                      {selectedDay.windInfo.label} — {selectedDay.windInfo.tip}
                     </p>
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-2 my-3 text-xs">
-                  <div className="p-2.5 rounded-2xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                      <Thermometer className="w-3 h-3 text-amber-400" />
-                      <span>{isEn ? 'Temperature' : 'Temperatur'}</span>
-                    </span>
-                    <p className="text-sm font-black text-white mt-1">
-                      {selectedDay.max}°C / {selectedDay.min}°C
-                    </p>
+                  <div className="p-2.5 rounded-xl bg-purple-950/50 border border-purple-500/30 text-[11px] text-purple-200 font-medium flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
+                    <span>{selectedDay.info.tip}</span>
                   </div>
-
-                  <div className="p-2.5 rounded-2xl bg-slate-800/80 border border-slate-700">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase flex items-center gap-1">
-                      <CloudRain className="w-3 h-3 text-blue-400" />
-                      <span>{isEn ? 'Rain / Snow' : 'Yağış / Qar'}</span>
-                    </span>
-                    <p className="text-sm font-black text-cyan-300 mt-1">
-                      {selectedDay.rain}% {isEn ? 'chance' : 'ehtimal'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-indigo-950/60 border border-indigo-500/30 mb-3">
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-bold text-indigo-300 flex items-center gap-1">
-                      <Wind className="w-3.5 h-3.5 text-cyan-400" />
-                      <span>{isEn ? 'Wind Speed' : 'Küləyin Sürəti'}</span>
-                    </span>
-                    <span className="font-black text-white">
-                      {selectedDay.wind} km/s
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-slate-200 font-semibold">
-                    {selectedDay.windInfo.label} — {selectedDay.windInfo.tip}
-                  </p>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-purple-950/50 border border-purple-500/30 text-[11px] text-purple-200 font-medium flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
-                  <span>{selectedDay.info.tip}</span>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
 
       </div>
     </section>

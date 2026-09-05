@@ -38,14 +38,16 @@ export default function SettingsModal() {
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 cursor-pointer"
+        onClick={() => setIsSettingsOpen(false)}
+      >
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => setIsSettingsOpen(false)}
-          className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+          className="fixed inset-0 bg-slate-950/80 backdrop-blur-md -z-10 pointer-events-none"
         />
 
         {/* Modal Window - Compact single-screen layout */}
@@ -53,7 +55,8 @@ export default function SettingsModal() {
           initial={{ scale: 0.94, opacity: 0, y: 10 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.94, opacity: 0, y: 10 }}
-          className="relative z-10 w-full max-w-sm sm:max-w-md rounded-3xl p-4 sm:p-5 bg-slate-900/95 border border-purple-500/35 shadow-2xl text-white flex flex-col justify-between"
+          onClick={(e) => e.stopPropagation()}
+          className="relative z-10 w-full max-w-sm sm:max-w-md rounded-3xl p-4 sm:p-5 bg-slate-900/95 border border-purple-500/35 shadow-2xl text-white flex flex-col justify-between cursor-default"
         >
           {/* Header */}
           <div className="flex items-center justify-between pb-2 border-b border-purple-500/20 mb-2.5 shrink-0">
