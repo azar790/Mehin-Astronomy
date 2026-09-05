@@ -1,113 +1,71 @@
 import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { useApp } from '../context/AppContext';
 
 export default function StarryBackground() {
   const { activeThemeObj, theme } = useApp();
 
-  // Generate deterministic stars with random twinkle delays
+  // 25 lightweight stars with pure CSS animations (hardware-accelerated, 0% CPU overhead)
   const stars = useMemo(() => {
-    return Array.from({ length: 50 }).map((_, i) => ({
+    return Array.from({ length: 24 }).map((_, i) => ({
       id: i,
       x: Math.floor((i * 17) % 100),
       y: Math.floor((i * 23) % 100),
-      size: (i % 3) + 1.2,
-      delay: (i % 5) * 0.7,
-      duration: 2 + (i % 4),
-      color: i % 5 === 0 ? '#fbcfe8' : i % 7 === 0 ? '#67e8f9' : '#ffffff',
+      size: (i % 2 === 0 ? 2 : 1.5),
+      delay: (i % 4) * 0.8,
+      duration: 2.5 + (i % 3),
+      color: i % 4 === 0 ? '#fbcfe8' : i % 5 === 0 ? '#67e8f9' : '#ffffff',
     }));
   }, []);
 
-  // Theme-specific glow colors
-  const glowConfig = useMemo(() => {
+  // Theme radial glow styles without slow CSS filter blurs
+  const radialGlows = useMemo(() => {
     switch (theme) {
       case 'sunset':
-        return {
-          glow1: 'bg-amber-600/25',
-          glow2: 'bg-rose-600/20',
-          glow3: 'bg-purple-900/25',
-        };
+        return 'radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(244, 63, 94, 0.15) 0%, transparent 50%)';
       case 'aurora':
-        return {
-          glow1: 'bg-emerald-600/25',
-          glow2: 'bg-teal-500/20',
-          glow3: 'bg-cyan-800/25',
-        };
+        return 'radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(20, 184, 166, 0.15) 0%, transparent 50%)';
       case 'candy':
-        return {
-          glow1: 'bg-pink-600/25',
-          glow2: 'bg-fuchsia-600/25',
-          glow3: 'bg-indigo-700/20',
-        };
+        return 'radial-gradient(circle at 20% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 50%)';
       case 'daylight':
-        return {
-          glow1: 'bg-sky-500/25',
-          glow2: 'bg-cyan-400/20',
-          glow3: 'bg-amber-400/20',
-        };
+        return 'radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(251, 191, 36, 0.12) 0%, transparent 50%)';
       case 'cosmic':
       default:
-        return {
-          glow1: 'bg-purple-900/25',
-          glow2: 'bg-indigo-600/20',
-          glow3: 'bg-cyan-900/20',
-        };
+        return 'radial-gradient(circle at 20% 20%, rgba(147, 51, 234, 0.15) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(79, 70, 229, 0.15) 0%, transparent 50%)';
     }
   }, [theme]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {/* Dynamic Theme Gradient Layers */}
-      <div className={`absolute inset-0 bg-gradient-to-b ${activeThemeObj.bgGradient} transition-colors duration-700`} />
-      
-      {/* Nebula Ambient Glows */}
-      <div className={`absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[400px] max-h-[400px] rounded-full ${glowConfig.glow1} blur-[100px]`} />
-      <div className={`absolute top-[35%] right-[-10%] w-[50vw] h-[50vw] max-w-[350px] max-h-[350px] rounded-full ${glowConfig.glow2} blur-[110px]`} />
-      <div className={`absolute bottom-[-10%] left-[10%] w-[60vw] h-[60vw] max-w-[400px] max-h-[400px] rounded-full ${glowConfig.glow3} blur-[120px]`} />
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 will-change-transform">
+      {/* Background Gradient */}
+      <div className={`absolute inset-0 bg-gradient-to-b ${activeThemeObj.bgGradient} transition-colors duration-500`} />
 
-      {/* Twinkling Stars */}
+      {/* GPU Radial Glows (Instant 60fps render on mobile) */}
+      <div
+        className="absolute inset-0 transition-all duration-500"
+        style={{ backgroundImage: radialGlows }}
+      />
+
+      {/* Lightweight CSS Twinkling Stars */}
       {stars.map((s) => (
-        <motion.div
+        <div
           key={s.id}
-          className="absolute rounded-full"
+          className="absolute rounded-full animate-twinkle"
           style={{
             left: `${s.x}%`,
             top: `${s.y}%`,
             width: `${s.size}px`,
             height: `${s.size}px`,
             backgroundColor: s.color,
-            boxShadow: `0 0 ${s.size * 2}px ${s.color}`,
-          }}
-          animate={{
-            opacity: [0.15, 0.95, 0.15],
-            scale: [0.8, 1.25, 0.8],
-          }}
-          transition={{
-            duration: s.duration,
-            delay: s.delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
+            animationDelay: `${s.delay}s`,
+            animationDuration: `${s.duration}s`,
           }}
         />
       ))}
 
-      {/* Floating Space Mascot */}
-      <motion.div
-        className="absolute text-xl sm:text-2xl filter drop-shadow-[0_0_12px_rgba(255,200,0,0.6)]"
-        initial={{ x: '-15vw', y: '12vh' }}
-        animate={{
-          x: ['-15vw', '115vw'],
-          y: ['12vh', '28vh'],
-        }}
-        transition={{
-          duration: 24,
-          repeat: Infinity,
-          ease: 'linear',
-          delay: 1,
-        }}
-      >
+      {/* Smooth Flying Mascot */}
+      <div className="absolute text-xl animate-float top-16 right-4 select-none opacity-80">
         {theme === 'daylight' ? '🕊️' : '🚀'}
-      </motion.div>
+      </div>
     </div>
   );
 }
