@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useApp } from '../context/AppContext';
+import Astronaut from './Astronaut';
 
 export default function StarryBackground() {
-  const { activeThemeObj, theme } = useApp();
+  const { activeThemeObj } = useApp();
   const { scrollYProgress } = useScroll();
 
   // Vibrant color shift on scroll
@@ -17,7 +18,7 @@ export default function StarryBackground() {
     ]
   );
 
-  // High-visibility, Retina-friendly sparkling stars
+  // High-visibility stars
   const stars = useMemo(() => {
     return [
       { id: 1, x: 8, y: 12, size: 5, color: '#fef08a', duration: 2.2, delay: 0 },
@@ -69,7 +70,7 @@ export default function StarryBackground() {
         className="absolute bottom-[20%] right-[-15%] w-88 h-88 rounded-full bg-gradient-to-bl from-cyan-500/30 to-indigo-600/25 blur-2xl"
       />
 
-      {/* Fast Shooting Star (Comet) */}
+      {/* Shooting Star Comet */}
       <motion.div
         className="absolute w-36 h-1 bg-gradient-to-r from-transparent via-cyan-300 to-white rounded-full rotate-[-40deg] filter drop-shadow-[0_0_8px_#38bdf8]"
         initial={{ x: '110vw', y: '5vh', opacity: 0 }}
@@ -86,7 +87,7 @@ export default function StarryBackground() {
         }}
       />
 
-      {/* High-Visibility Sparkling Stars with Halos */}
+      {/* High-Visibility Sparkling Stars */}
       {stars.map((s) => (
         <motion.div
           key={s.id}
@@ -112,56 +113,21 @@ export default function StarryBackground() {
         />
       ))}
 
-      {/* 🧑‍🚀 MAIN FLOATING ASTRONAUT - SLOWLY MOVING UP AND DOWN IN ZERO GRAVITY */}
+      {/* 🧑‍🚀 FULL-BODY ASTRONAUT WITH MOVING HANDS & FEET ROAMING ACROSS THE ENTIRE SCREEN */}
       <motion.div
+        className="absolute z-0 will-change-transform"
         animate={{
-          y: [0, -32, 0],
-          rotate: [-6, 6, -6],
-          x: [0, 8, 0],
+          x: ['5vw', '70vw', '55vw', '10vw', '5vw'],
+          y: ['12vh', '32vh', '68vh', '48vh', '12vh'],
+          rotate: [-8, 14, -12, 10, -8],
         }}
         transition={{
-          duration: 5.5,
+          duration: 24,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
-        className="absolute top-28 right-3 sm:right-10 z-0 flex flex-col items-center select-none"
       >
-        {/* Glowing Astronaut Halo */}
-        <div className="relative">
-          <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-cyan-400/30 rounded-full blur-md animate-pulse" />
-          <div className="relative text-4xl sm:text-5xl filter drop-shadow-[0_0_16px_rgba(168,85,247,0.7)]">
-            🧑‍🚀
-          </div>
-        </div>
-
-        {/* Small Stardust Tail trailing under astronaut */}
-        <motion.div
-          animate={{
-            opacity: [0.3, 0.8, 0.3],
-            scale: [0.8, 1.1, 0.8],
-          }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="text-[10px] text-cyan-300 font-bold mt-1 tracking-widest uppercase opacity-75"
-        >
-          ✨ ☁️
-        </motion.div>
-      </motion.div>
-
-      {/* Second Cute Space Explorer Pal in lower screen floating up and down */}
-      <motion.div
-        animate={{
-          y: [0, 28, 0],
-          rotate: [4, -5, 4],
-        }}
-        transition={{
-          duration: 6.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 1,
-        }}
-        className="absolute bottom-40 left-3 sm:left-8 z-0 text-3xl sm:text-4xl filter drop-shadow-[0_0_12px_rgba(6,182,212,0.6)] select-none opacity-80"
-      >
-        🛰️
+        <Astronaut />
       </motion.div>
 
     </div>
