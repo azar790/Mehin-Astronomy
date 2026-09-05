@@ -4,19 +4,21 @@ const AppContext = createContext();
 
 export const CITIES_LIST = [
   { name: 'Baku', name_az: 'Bakı', country: 'Azerbaijan', lat: 40.4093, lng: 49.8671 },
-  { name: 'London', name_az: 'London', country: 'United Kingdom', lat: 51.5074, lng: -0.1278 },
+  { name: 'Seattle', name_az: 'Seattle (ABŞ)', country: 'United States', lat: 47.6062, lng: -122.3321 },
   { name: 'New York', name_az: 'Nyu-York', country: 'United States', lat: 40.7128, lng: -74.0060 },
-  { name: 'Tokyo', name_az: 'Tokio', country: 'Japan', lat: 35.6762, lng: 139.6503 },
-  { name: 'Istanbul', name_az: 'İstanbul', country: 'Turkey', lat: 41.0082, lng: 28.9784 },
   { name: 'Paris', name_az: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522 },
+  { name: 'London', name_az: 'London', country: 'United Kingdom', lat: 51.5074, lng: -0.1278 },
 ];
 
 export const AVATARS = [
   { id: 'astronaut', emoji: '🧑‍🚀', label_en: 'Space Cadet', label_az: 'Kosmonavt' },
   { id: 'starlight', emoji: '⭐', label_en: 'Star Princess', label_az: 'Ulduz Pərisi' },
+  { id: 'unicorn', emoji: '🦄', label_en: 'Cosmic Unicorn', label_az: 'Kosmik Təkbuynuz' },
   { id: 'rocket', emoji: '🚀', label_en: 'Comet Rider', label_az: 'Raket Pilotu' },
-  { id: 'alien', emoji: '👽', label_en: 'Friendly Alien', label_az: 'Sevimli Yadplanetli' },
+  { id: 'alien', emoji: '👽', label_en: 'Friendly Alien', label_az: 'Yadplanetli' },
   { id: 'cat_explorer', emoji: '🐱‍🚀', label_en: 'Astro Kitty', label_az: 'Kosmik Pişik' },
+  { id: 'dragon', emoji: '🐲', label_en: 'Galaxy Dragon', label_az: 'Qalaktika Əjdahası' },
+  { id: 'superhero', emoji: '🦸‍♀️', label_en: 'Star Hero', label_az: 'Ulduz Qəhrəmanı' },
 ];
 
 export const THEMES = [
