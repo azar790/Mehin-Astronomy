@@ -29,7 +29,7 @@ export default function FirstGradeSchoolCountdown() {
       icon: '🎒',
       title_az: 'Məktəbə Hazırlıq & Sevinc',
       title_en: 'Excitement for 1st Grade',
-      text_az: 'Çantanı, rəngli qələmlərini və dəftərlərini axşamdan səliqə ilə yığ. Səliqəli kəşfiyyatçılar həmişə uğur qazanır!',
+      text_az: 'Çantanı, rəngli qələmlərini və dəftərlərini axşamdan səliqə ilə yığ. Səliqəli uşaqlar həmişə böyük uğur qazanır!',
       text_en: 'Pack your schoolbag, bright pencils, and books neatly. Organized explorers always succeed!',
     },
     {

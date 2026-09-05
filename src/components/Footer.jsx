@@ -15,7 +15,7 @@ export default function Footer() {
       <div className="p-3.5 rounded-3xl bg-slate-900/40 backdrop-blur-md border border-purple-500/10 flex items-center justify-between gap-2">
         
         <div className="flex items-center gap-1.5 text-xs text-purple-200/80">
-          <span>{isEn ? 'Crafted for' : 'Kəşfiyyatçı'}</span>
+          <span>{isEn ? 'Made with love for' : 'Ulduz Qəhrəmanı'}</span>
           <span className="font-bold text-amber-300">{explorerName}</span>
           <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500 inline animate-pulse" />
         </div>
