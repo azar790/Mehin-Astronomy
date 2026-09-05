@@ -24,45 +24,40 @@ export const THEMES = [
     id: 'cosmic',
     name_en: 'Cosmic Night 🌌',
     name_az: 'Kosmik Gecə 🌌',
-    bgGradient: 'from-slate-950 via-[#0a0720] to-[#050414]',
-    scrollAccent: 'from-purple-900/50 via-slate-900/80 to-slate-950',
-    cardBg: 'bg-slate-900/85 border-purple-500/30',
+    bgGradient: 'from-slate-950 via-[#0c0828] to-[#060416]',
+    cardBg: 'bg-slate-900/75 border-purple-500/35 shadow-purple-950/40',
     colorHex: '#9333ea',
   },
   {
     id: 'sunset',
     name_en: 'Sunset Glow 🌇',
     name_az: 'Qızılı Qürub 🌇',
-    bgGradient: 'from-[#1e0d2d] via-[#2d1124] to-[#12081f]',
-    scrollAccent: 'from-amber-900/50 via-rose-900/60 to-purple-950',
-    cardBg: 'bg-[#230f24]/90 border-amber-500/40',
+    bgGradient: 'from-[#240e32] via-[#2f1025] to-[#150922]',
+    cardBg: 'bg-[#250d27]/75 border-amber-500/40 shadow-amber-950/40',
     colorHex: '#f59e0b',
   },
   {
     id: 'aurora',
     name_en: 'Emerald Aurora 💚',
     name_az: 'Zümrüd Parıltısı 💚',
-    bgGradient: 'from-[#031c18] via-[#052620] to-[#021310]',
-    scrollAccent: 'from-emerald-950/60 via-teal-950/70 to-slate-950',
-    cardBg: 'bg-[#04241d]/90 border-emerald-500/40',
+    bgGradient: 'from-[#04201c] via-[#062c25] to-[#021612]',
+    cardBg: 'bg-[#052820]/75 border-emerald-500/40 shadow-emerald-950/40',
     colorHex: '#10b981',
   },
   {
     id: 'candy',
     name_en: 'Star Candy 🦄',
     name_az: 'Ulduz Nağılı 🦄',
-    bgGradient: 'from-[#1f0b24] via-[#280d2e] to-[#120616]',
-    scrollAccent: 'from-pink-950/60 via-fuchsia-950/70 to-[#120616]',
-    cardBg: 'bg-[#260e2c]/90 border-pink-500/40',
+    bgGradient: 'from-[#260d2d] via-[#330f3b] to-[#16061a]',
+    cardBg: 'bg-[#280c2f]/75 border-pink-500/40 shadow-pink-950/40',
     colorHex: '#ec4899',
   },
   {
     id: 'daylight',
     name_en: 'Sunny Sky ☀️',
     name_az: 'Açıq Səma ☀️',
-    bgGradient: 'from-[#08203e] via-[#103b68] to-[#05162a]',
-    scrollAccent: 'from-sky-950/60 via-blue-950/70 to-slate-950',
-    cardBg: 'bg-[#0a2747]/90 border-sky-400/40',
+    bgGradient: 'from-[#0a284e] via-[#12467d] to-[#061c36]',
+    cardBg: 'bg-[#0d3159]/75 border-sky-400/40 shadow-sky-950/40',
     colorHex: '#38bdf8',
   },
 ];
@@ -117,7 +112,7 @@ export function AppProvider({ children }) {
 
   // Language
   const [language, setLanguageState] = useState(() => {
-    return safeGet('cosmic_language', 'az'); // Default to Azerbaijani or toggle
+    return safeGet('cosmic_language', 'az');
   });
   const setLanguage = (newLang) => {
     setLanguageState(newLang);
@@ -130,7 +125,7 @@ export function AppProvider({ children }) {
     if (saved) {
       try { return JSON.parse(saved); } catch (e) {}
     }
-    return CITIES_LIST[0]; // Baku default
+    return CITIES_LIST[0];
   });
   const setCity = (newCity) => {
     setCityState(newCity);
