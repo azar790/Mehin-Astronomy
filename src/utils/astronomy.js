@@ -125,7 +125,7 @@ export function getSkyData(lat = 40.4093, lng = 49.8671, date = new Date()) {
 /**
  * Get personalized sky tip message for the explorer
  */
-export function getKidSkyMessage(skyData, explorerName = 'Lilia', lang = 'en') {
+export function getKidSkyMessage(skyData, explorerName = 'Mehin', lang = 'en') {
   const isEn = lang === 'en';
   const { skyState, moon } = skyData;
 

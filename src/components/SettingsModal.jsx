@@ -81,22 +81,13 @@ export default function SettingsModal() {
                 type="text"
                 value={tempName}
                 onChange={(e) => setTempName(e.target.value)}
-                placeholder="e.g. Mehin or Lilia"
+                placeholder="e.g. Mehin"
                 className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-800 border border-purple-500/30 text-white font-bold placeholder-slate-500 focus:outline-none focus:border-pink-500 text-sm transition"
               />
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] text-slate-400">{isEn ? 'Quick pick:' : 'Tez seçim:'}</span>
-                {['Mehin', 'Lilia'].map(n => (
-                  <button
-                    key={n}
-                    type="button"
-                    onClick={() => setTempName(n)}
-                    className="text-[10px] px-2 py-0.5 rounded-lg bg-purple-950 text-purple-200 border border-purple-700/50 hover:bg-purple-900"
-                  >
-                    {n}
-                  </button>
-                ))}
-              </div>
+              <p className="text-[10px] text-slate-400 mt-1.5">
+                {isEn ? 'All cosmic wonders and sky tips will address you by this name!' : 'Bütün kosmik xəbərlər və səma tövsiyələri sənə bu adla müraciət edəcək!'}
+              </p>
+
             </div>
 
             {/* Themes Selector */}

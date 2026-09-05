@@ -1,6 +1,6 @@
-# 🚀 Mehin's Cosmic Explorer (Kosmik Kəşfiyyatçı Mehin & Lilia)
+# 🚀 Mehin's Cosmic Explorer (Kosmik Kəşfiyyatçı Mehin)
 
-> An animated, magical, kid-friendly astronomy & world wonders discovery portal built with boundless love for curious young explorers! 🌟
+> An animated, magical, kid-friendly astronomy & world wonders discovery portal built with boundless love for curious young explorer Mehin! 🌟
 
 ![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![Vite](https://img.shields.io/badge/Vite-8-purple?logo=vite)
@@ -19,9 +19,9 @@
   - Real-time **Sunrise & Sunset** calculator with an animated daylight arc.
   - Live **Moon Phase & Illumination** tracker (Crescent, Gibbous, Full Moon, Blood Moon alerts).
   - Next Full Moon countdown timer ("Full Moon in 3 days!").
-- ⏳ **Wonder Radar (Next 30 Days):**
-  - Shows upcoming world festivals, astronomical milestones, and cultural days strictly within the **next 1 month (30 days)** so explorers can stay ahead and remind their families!
-- 🌍 **World Wonders & Festivals:**
+- ⏳ **Wonder Radar (Next 7 Days):**
+  - Shows upcoming world festivals, astronomical milestones, and cultural days strictly within the **next 7 days** so explorers can stay ahead and remind their families!
+- 🌍 **World Wonders & Celebrations:**
   - Vibrant celebrations: Brazil Carnival 🇧🇷, India Holi 🇮🇳, Japan Sakura 🌸, USA 4th of July 🎆, Spain La Tomatina 🍅.
   - Family & Kid Days: International Children's Day 🎈, Mother's Day 💐, Father's Day 👔, World Cat Day 🐱, World Literacy & Curiosity Day 📚.
   - Azerbaijani Cultural Days: Novruz Bayramı 🌺, Su, Od, Yel və Torpaq çərşənbələri, Dövlət Bayrağı Günü 🇦🇿.
@@ -34,7 +34,7 @@
   - **Star Candy 🦄:** Pastel pink, magical fairy tale vibes.
   - **Sunny Sky ☀️:** Bright daylight sky with golden sunshine.
 - ⚙️ **Explorer Control Center:**
-  - Personalize explorer name (defaults to **Mehin** / **Lilia**).
+  - Personalize explorer name (defaults to **Mehin**).
   - Choose explorer avatar (Cadet 🧑‍🚀, Star Princess ⭐, Comet Rider 🚀, Alien Pal 👽, Astro Kitty 🐱‍🚀).
   - Language toggle: **English 🇬🇧 / Azərbaycan 🇦🇿**.
   - Geolocation detection (GPS) or city selector (Baku, London, New York, Tokyo, Istanbul, Paris).
@@ -87,4 +87,5 @@ The app is designed with a mobile-first, responsive touch layout. In future stag
 
 ## ❤️ Dedication
 
-Crafted with boundless love and curiosity. May the universe always keep your eyes sparkling and your imagination flying higher than the stars! 🌌
+Crafted with boundless love and curiosity for Mehin. May the universe always keep your eyes sparkling and your imagination flying higher than the stars! 🌌
+

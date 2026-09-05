@@ -79,10 +79,16 @@ function safeSet(key, val) {
 }
 
 export function AppProvider({ children }) {
-  // Explorer Name
+  // Explorer Name (Default: Mehin)
   const [explorerName, setExplorerNameState] = useState(() => {
-    return safeGet('cosmic_explorer_name', 'Mehin');
+    let saved = safeGet('cosmic_explorer_name', 'Mehin');
+    if (!saved || saved === 'Lilia') {
+      saved = 'Mehin';
+      safeSet('cosmic_explorer_name', 'Mehin');
+    }
+    return saved;
   });
+
 
   const setExplorerName = (newName) => {
     const trimmed = (newName || '').trim();
