@@ -100,13 +100,27 @@ export function AppProvider({ children }) {
     }
   };
 
-  // Avatar
+  // Avatar (supports built-in IDs and 'custom_photo')
   const [avatar, setAvatarState] = useState(() => {
     return safeGet('cosmic_avatar', 'astronaut');
   });
+  const [customPhoto, setCustomPhotoState] = useState(() => {
+    return safeGet('cosmic_custom_photo', null);
+  });
+
   const setAvatar = (newAvatar) => {
     setAvatarState(newAvatar);
     safeSet('cosmic_avatar', newAvatar);
+  };
+
+  const setCustomPhoto = (photoBase64) => {
+    setCustomPhotoState(photoBase64);
+    if (photoBase64) {
+      safeSet('cosmic_custom_photo', photoBase64);
+      setAvatar('custom_photo');
+    } else {
+      try { localStorage.removeItem('cosmic_custom_photo'); } catch (e) {}
+    }
   };
 
   // Theme
@@ -173,7 +187,10 @@ export function AppProvider({ children }) {
     );
   };
 
-  const activeAvatarObj = AVATARS.find(a => a.id === avatar) || AVATARS[0];
+  const activeAvatarObj = avatar === 'custom_photo' && customPhoto
+    ? { id: 'custom_photo', emoji: '📸', isCustom: true, photoUrl: customPhoto, label_en: 'My Photo', label_az: 'Mənim Şəklim' }
+    : (AVATARS.find(a => a.id === avatar) || AVATARS[0]);
+
   const activeThemeObj = THEMES.find(t => t.id === theme) || THEMES[0];
 
   return (
@@ -183,6 +200,8 @@ export function AppProvider({ children }) {
         setExplorerName,
         avatar,
         setAvatar,
+        customPhoto,
+        setCustomPhoto,
         activeAvatarObj,
         theme,
         setTheme,

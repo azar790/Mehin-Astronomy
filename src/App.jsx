@@ -4,6 +4,7 @@ import StarryBackground from './components/StarryBackground';
 import Header from './components/Header';
 import WeatherForecast from './components/WeatherForecast';
 import SkyRadar from './components/SkyRadar';
+import FirstGradeSchoolCountdown from './components/FirstGradeSchoolCountdown';
 import FeaturedEvent from './components/FeaturedEvent';
 import UpcomingRadar from './components/UpcomingRadar';
 import SettingsModal from './components/SettingsModal';
@@ -22,6 +23,9 @@ function MainApp() {
 
         {/* Core Mobile Content Flow */}
         <main className="flex-1 space-y-2.5 pb-4">
+          {/* Special 1st Grade Motivational School Banner for Mehin */}
+          <FirstGradeSchoolCountdown />
+
           {/* Celestial & Solar Tracker (Sun Journey & Moon Radar) */}
           <SkyRadar />
 

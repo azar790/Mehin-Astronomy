@@ -32,9 +32,13 @@ export default function Header() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsSettingsOpen(true)}
-            className="cursor-pointer relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 text-2xl shadow-md shrink-0 border border-white/20 select-none"
+            className="cursor-pointer relative flex items-center justify-center w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-600 to-pink-500 shadow-md shrink-0 border border-white/20 overflow-hidden select-none"
           >
-            <span>{activeAvatarObj.emoji}</span>
+            {activeAvatarObj.isCustom && activeAvatarObj.photoUrl ? (
+              <img src={activeAvatarObj.photoUrl} alt="Explorer" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-2xl">{activeAvatarObj.emoji}</span>
+            )}
             <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 border-2 border-slate-900"></span>

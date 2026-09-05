@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, MapPin, Globe, Sparkles, Navigation, Palette } from 'lucide-react';
+import { X, User, MapPin, Globe, Sparkles, Navigation, Palette, Camera, Trash2 } from 'lucide-react';
 import { useApp, AVATARS, CITIES_LIST, THEMES } from '../context/AppContext';
 
 export default function SettingsModal() {
@@ -9,6 +9,8 @@ export default function SettingsModal() {
     setExplorerName,
     avatar,
     setAvatar,
+    customPhoto,
+    setCustomPhoto,
     theme,
     setTheme,
     language,
@@ -21,6 +23,7 @@ export default function SettingsModal() {
     setIsSettingsOpen,
   } = useApp();
 
+  const fileInputRef = useRef(null);
   const isEn = language === 'en';
   const [tempName, setTempName] = useState(explorerName);
 
@@ -88,12 +91,71 @@ export default function SettingsModal() {
               />
             </div>
 
-            {/* 2. Choose Avatar - 4x2 grid with padding to prevent any clipping */}
+            {/* 2. Choose Avatar or Take Photo */}
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-purple-300 mb-1 flex items-center gap-1">
-                <Sparkles className="w-3 h-3 text-amber-300" />
-                <span>{isEn ? 'Choose Avatar' : 'Avatar Seç'}</span>
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-purple-300 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-300" />
+                  <span>{isEn ? 'Avatar or Photo' : 'Avatar və ya Şəkil'}</span>
+                </label>
+
+                {/* Hidden File Input for Camera/Gallery */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  capture="user"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files && e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        const base64 = event.target.result;
+                        setCustomPhoto(base64);
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+
+                {/* Camera Trigger Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  className="px-2 py-0.5 rounded-lg bg-pink-600/30 hover:bg-pink-600/50 border border-pink-400/50 text-[10px] font-bold text-pink-200 flex items-center gap-1 cursor-pointer transition"
+                >
+                  <Camera className="w-3 h-3 text-pink-300" />
+                  <span>{isEn ? 'Take Photo / Upload' : 'Kamera / Şəkil Yüklə'}</span>
+                </button>
+              </div>
+
+              {/* Custom Photo Preview if exists */}
+              {customPhoto && (
+                <div className="mb-1.5 p-1.5 rounded-xl bg-purple-950/40 border border-pink-500/30 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setAvatar('custom_photo')}
+                    className={`flex items-center gap-2 cursor-pointer ${avatar === 'custom_photo' ? 'text-pink-300 font-black' : 'text-slate-300'}`}
+                  >
+                    <img src={customPhoto} alt="Me" className={`w-7 h-7 rounded-xl object-cover border-2 ${avatar === 'custom_photo' ? 'border-pink-400 ring-2 ring-pink-400/50' : 'border-slate-600'}`} />
+                    <span className="text-[10px]">{isEn ? '✓ Using My Photo Avatar' : '✓ Öz Şəklim Seçilib'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCustomPhoto(null);
+                      setAvatar('astronaut');
+                    }}
+                    title={isEn ? 'Delete photo' : 'Şəkli sil'}
+                    className="p-1 text-rose-400 hover:text-rose-200 cursor-pointer"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+
+              {/* Avatars Grid */}
               <div className="grid grid-cols-4 gap-1.5 px-0.5">
                 {AVATARS.map((item) => (
                   <button
