@@ -22,19 +22,19 @@ function MainApp() {
 
         {/* Core Mobile Content Flow */}
         <main className="flex-1 space-y-2.5 pb-4">
-          {/* 7-Day Live Weather Forecast (Temperature, Rain/Snow, Wind) */}
-          <WeatherForecast />
-
-          {/* Celestial & Solar Tracker */}
+          {/* Celestial & Solar Tracker (Sun Journey & Moon Radar) */}
           <SkyRadar />
 
+          {/* 5-Day Live Weather Forecast (Temperature, Rain/Snow, Wind) */}
+          <WeatherForecast />
 
           {/* Today's Featured Wonder / Festival */}
           <FeaturedEvent />
 
-          {/* Upcoming Radar & 30-Day Countdown Timeline */}
+          {/* Upcoming Radar (Next 7 Days) */}
           <UpcomingRadar />
         </main>
+
 
         {/* Warm Personalized Footer */}
         <Footer />
