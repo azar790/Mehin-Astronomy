@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -8,6 +8,7 @@ export default function UpcomingRadar() {
   const { language, activeThemeObj, explorerName } = useApp();
   const isEn = language === 'en';
 
+  const [activeCategory, setActiveCategory] = useState('all');
   const today = new Date();
 
   const getEventDaysLeft = (eventMonth, eventDay) => {
@@ -19,20 +20,36 @@ export default function UpcomingRadar() {
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  // Filter events within the upcoming 10 days (so events like 15 Sept show 10 days in advance)
-  const upcomingEvents = eventsData
+  // Filter events within the upcoming 40 days so Mehin always discovers plenty of upcoming wonders!
+  const allUpcoming = eventsData
     .map(event => ({
       ...event,
       daysLeft: getEventDaysLeft(event.month, event.day),
     }))
-    .filter(event => event.daysLeft >= 0 && event.daysLeft <= 10)
+    .filter(event => event.daysLeft >= 0 && event.daysLeft <= 40)
     .sort((a, b) => a.daysLeft - b.daysLeft);
+
+  const upcomingEvents = activeCategory === 'all'
+    ? allUpcoming
+    : allUpcoming.filter(e => {
+        if (activeCategory === 'cosmic') return e.category === 'cosmic';
+        if (activeCategory === 'culture') return e.category === 'culture';
+        if (activeCategory === 'nature') return e.category === 'nature' || e.category === 'global';
+        return true;
+      });
 
   const formatDaysBadge = (days) => {
     if (days === 0) return isEn ? '🎉 Today!' : '🎉 Bu gün!';
     if (days === 1) return isEn ? '⏳ Tomorrow!' : '⏳ Sabah!';
     return isEn ? `⏳ In ${days} days` : `⏳ ${days} gün qaldı`;
   };
+
+  const categories = [
+    { id: 'all', label: isEn ? 'All' : 'Hamısı', icon: '✨' },
+    { id: 'cosmic', label: isEn ? 'Cosmic' : 'Kosmik', icon: '🚀' },
+    { id: 'culture', label: isEn ? 'Holidays' : 'Milli', icon: '🇦🇿' },
+    { id: 'nature', label: isEn ? 'World' : 'Dünya', icon: '🌍' },
+  ];
 
   return (
     <section className="relative z-10 w-full max-w-xl mx-auto px-3 sm:px-4 py-2">
@@ -44,7 +61,7 @@ export default function UpcomingRadar() {
         className={`p-4 sm:p-5 rounded-3xl ${activeThemeObj.cardBg} backdrop-blur-xl shadow-xl transition-colors duration-500`}
       >
         {/* Responsive Header: iPhone-friendly without text breaking */}
-        <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-purple-500/20">
+        <div className="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-purple-500/20">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-xl shrink-0 select-none">📅</span>
             <div className="min-w-0">
@@ -53,7 +70,7 @@ export default function UpcomingRadar() {
                 <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
               </h2>
               <p className="text-[11px] text-purple-200/80 font-medium truncate">
-                {isEn ? `Special days for ${explorerName}` : `${explorerName} üçün xüsusi günlər`}
+                {isEn ? `Next 40 days for ${explorerName}` : `${explorerName} üçün qarşıdakı 40 gün`}
               </p>
             </div>
           </div>
@@ -62,6 +79,25 @@ export default function UpcomingRadar() {
           <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-200 border border-purple-400/40 shrink-0 whitespace-nowrap">
             {upcomingEvents.length} {isEn ? 'wonders' : 'hadisə'}
           </span>
+        </div>
+
+        {/* Quick Category Chips for exploring */}
+        <div className="flex items-center gap-1.5 mb-3 overflow-x-auto pb-1 scrollbar-none">
+          {categories.map(cat => (
+            <button
+              key={cat.id}
+              type="button"
+              onClick={() => setActiveCategory(cat.id)}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition cursor-pointer shrink-0 ${
+                activeCategory === cat.id
+                  ? 'bg-purple-600 text-white shadow-sm ring-1 ring-purple-400'
+                  : 'bg-slate-800/80 text-purple-200 hover:bg-slate-700/80 border border-purple-500/20'
+              }`}
+            >
+              <span>{cat.icon}</span>
+              <span>{cat.label}</span>
+            </button>
+          ))}
         </div>
 
         {/* All events in ONE clean list (No missions, clean text & big emoji) */}

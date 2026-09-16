@@ -4,6 +4,7 @@ import StarryBackground from './components/StarryBackground';
 import Header from './components/Header';
 import WeatherForecast from './components/WeatherForecast';
 import SkyRadar from './components/SkyRadar';
+import CosmicDailyWonder from './components/CosmicDailyWonder';
 import FeaturedEvent from './components/FeaturedEvent';
 import UpcomingRadar from './components/UpcomingRadar';
 import SettingsModal from './components/SettingsModal';
@@ -22,16 +23,19 @@ function MainApp() {
 
         {/* Core Mobile Content Flow */}
         <main className="flex-1 space-y-2.5 pb-4">
-          {/* Celestial & Solar Tracker (Sun Journey & Moon Radar) */}
+          {/* 5-Day Live Weather Forecast (Temperature, Rain/Snow, Wind) - Now above Mehin's Sky */}
+          <WeatherForecast />
+
+          {/* Celestial & Solar Tracker (Sun Journey & Moon Radar - "Mehin's Sky") */}
           <SkyRadar />
 
-          {/* 5-Day Live Weather Forecast (Temperature, Rain/Snow, Wind) */}
-          <WeatherForecast />
+          {/* Daily Mind-Blowing Cosmic Wonder for Mehin */}
+          <CosmicDailyWonder />
 
           {/* Today's Featured Wonder / Festival */}
           <FeaturedEvent />
 
-          {/* Upcoming Radar (Next 7 Days) */}
+          {/* Upcoming Radar (Next 40 Days with Meteor Showers & Holidays) */}
           <UpcomingRadar />
         </main>
 
