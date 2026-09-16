@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CloudRain, Wind, Thermometer, Sparkles, X, Droplets } from 'lucide-react';
+import { CloudRain, Wind, Thermometer, Sparkles, X, Droplets, ChevronDown, ChevronUp } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { getWeatherInfo, getWindDescription } from '../utils/weather';
 
@@ -11,6 +11,7 @@ export default function WeatherForecast() {
 
   const [weatherData, setWeatherData] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false); // Normalda kiçik (collapsed)
 
   useEffect(() => {
     let isMounted = true;
@@ -55,113 +56,142 @@ export default function WeatherForecast() {
   };
 
   return (
-    <section className="relative z-10 w-full max-w-xl mx-auto px-3 sm:px-4 py-1.5">
-      <div className={`p-3.5 sm:p-4 rounded-3xl ${activeThemeObj.cardBg} backdrop-blur-xl shadow-lg transition-colors duration-500`}>
+    <section className="relative z-10 w-full max-w-xl mx-auto px-3 sm:px-4 py-1">
+      <div className={`p-2.5 sm:p-3.5 rounded-3xl ${activeThemeObj.cardBg} backdrop-blur-xl shadow-lg border border-purple-500/20 transition-colors duration-500`}>
         
-        {/* Header & City */}
-        <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-purple-500/20">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-base shrink-0">🌤️</span>
-            <h2 className="text-xs sm:text-sm font-black text-white tracking-tight truncate">
-              {isEn ? '5-Day Weather Forecast' : '5 Günlük Hava Proqnozu'}
-            </h2>
-          </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/30 shrink-0 whitespace-nowrap">
-            📍 {isEn ? city.name : (city.name_az || city.name)}
-          </span>
-        </div>
-
-        {/* Compact Summary for Today */}
-        <div className="flex items-center justify-between gap-2 p-2 rounded-2xl bg-slate-900/80 border border-slate-700/80 mb-2.5 shadow-inner">
+        {/* COMPACT & COLLAPSIBLE HEADER BAR (Always sleek and compact, expands on tap) */}
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full flex items-center justify-between gap-2 p-1 text-left cursor-pointer transition select-none group"
+        >
+          {/* Left: Live Weather Icon + Temperature + Description */}
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-2xl sm:text-3xl shrink-0 select-none animate-pulse">
               {currentInfo.icon}
             </span>
-            <div className="min-w-0">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl sm:text-2xl font-black text-white tracking-tight">
-                  {Math.round(currentTemp)}°C
-                </span>
-                <span className="text-xs font-bold text-purple-300 truncate">
-                  {currentInfo.name}
-                </span>
-              </div>
+            <div className="flex items-baseline gap-1.5 min-w-0">
+              <span className="text-lg sm:text-xl font-black text-white tracking-tight">
+                {Math.round(currentTemp)}°C
+              </span>
+              <span className="text-xs font-bold text-purple-200 truncate">
+                {currentInfo.name}
+              </span>
             </div>
           </div>
 
-          {/* Quick Wind & Rain badges */}
-          <div className="flex items-center gap-1.5 shrink-0 text-[10px] font-bold">
-            <span className="px-2 py-1 rounded-xl bg-indigo-950/80 border border-indigo-500/30 text-indigo-200 flex items-center gap-1 whitespace-nowrap">
-              <Wind className="w-3 h-3 text-cyan-400" />
-              <span>{Math.round(currentWind)} km/s</span>
+          {/* Right: City pill + quick rain + expand/collapse chevron badge */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-200 border border-cyan-400/30 whitespace-nowrap">
+              📍 {isEn ? city.name : (city.name_az || city.name)}
             </span>
-            <span className="px-2 py-1 rounded-xl bg-cyan-950/80 border border-cyan-500/30 text-cyan-200 flex items-center gap-1 whitespace-nowrap">
-              <Droplets className="w-3 h-3 text-blue-400" />
+
+            {/* Quick Rain badge */}
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-lg bg-cyan-950/70 border border-cyan-500/30 text-cyan-200 hidden xs:flex items-center gap-0.5 whitespace-nowrap">
+              <Droplets className="w-2.5 h-2.5 text-blue-400" />
               <span>{dailyRain[0]}%</span>
             </span>
+
+            {/* Toggle Badge */}
+            <div className="flex items-center gap-1 px-2 py-1 rounded-xl bg-purple-600/30 group-hover:bg-purple-600/50 border border-purple-400/40 text-[10px] font-black text-purple-200 transition shadow-sm">
+              <span className="hidden sm:inline">
+                {isExpanded ? (isEn ? 'Collapse' : 'Yığ') : (isEn ? '5-Day' : '5 Gün')}
+              </span>
+              {isExpanded ? (
+                <ChevronUp className="w-3.5 h-3.5 text-pink-300" />
+              ) : (
+                <ChevronDown className="w-3.5 h-3.5 text-pink-300" />
+              )}
+            </div>
           </div>
-        </div>
+        </button>
 
-        {/* 5-DAY CAPSULES: GRID OF 5 (FITS 100% INSIDE MOBILE SCREEN, ZERO HORIZONTAL SCROLL!) */}
-        <div className="grid grid-cols-5 gap-1.5 w-full">
-          {dailyDays.map((dStr, idx) => {
-            const info = getWeatherInfo(dailyCodes[idx], isEn);
-            const isToday = idx === 0;
-            return (
-              <motion.button
-                key={dStr}
-                whileTap={{ scale: 0.93 }}
-                onClick={() => setSelectedDay({
-                  dateStr: dStr,
-                  dayName: formatDayName(dStr, idx),
-                  info,
-                  max: Math.round(dailyMax[idx]),
-                  min: Math.round(dailyMin[idx]),
-                  rain: dailyRain[idx],
-                  wind: Math.round(dailyWind[idx]),
-                  windInfo: getWindDescription(dailyWind[idx], isEn),
-                  isToday,
+        {/* EXPANDED 5-DAY PROGNOSIS & DETAILS (Revealed smoothly on tap) */}
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: 'easeInOut' }}
+              className="overflow-hidden pt-2.5 mt-2 border-t border-purple-500/20 space-y-2"
+            >
+              {/* Extra Wind & Rain Stats Bar */}
+              <div className="flex items-center justify-between gap-2 p-2 rounded-2xl bg-slate-900/85 border border-slate-700/80 text-[11px] font-bold">
+                <span className="flex items-center gap-1.5 text-cyan-300">
+                  <Wind className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>{isEn ? 'Wind' : 'Külək'}: {Math.round(currentWind)} km/s</span>
+                </span>
+                <span className="flex items-center gap-1.5 text-blue-300">
+                  <Droplets className="w-3.5 h-3.5 text-blue-400" />
+                  <span>{isEn ? 'Rain chance' : 'Yağış ehtimalı'}: {dailyRain[0]}%</span>
+                </span>
+              </div>
+
+              {/* 5-DAY CAPSULES: GRID OF 5 (FITS 100% INSIDE MOBILE SCREEN) */}
+              <div className="grid grid-cols-5 gap-1.5 w-full">
+                {dailyDays.map((dStr, idx) => {
+                  const info = getWeatherInfo(dailyCodes[idx], isEn);
+                  const isToday = idx === 0;
+                  return (
+                    <motion.button
+                      key={dStr}
+                      type="button"
+                      whileTap={{ scale: 0.93 }}
+                      onClick={() => setSelectedDay({
+                        dateStr: dStr,
+                        dayName: formatDayName(dStr, idx),
+                        info,
+                        max: Math.round(dailyMax[idx]),
+                        min: Math.round(dailyMin[idx]),
+                        rain: dailyRain[idx],
+                        wind: Math.round(dailyWind[idx]),
+                        windInfo: getWindDescription(dailyWind[idx], isEn),
+                        isToday,
+                      })}
+                      className={`flex flex-col items-center justify-between py-2 px-1 rounded-2xl border transition-all cursor-pointer text-center w-full ${
+                        isToday
+                          ? 'bg-purple-600/35 border-purple-400 shadow-md ring-1 ring-purple-400/40'
+                          : 'bg-slate-900/70 border-slate-800/90 hover:border-slate-700'
+                      }`}
+                    >
+                      {/* Day name */}
+                      <span className={`text-[10px] font-black uppercase tracking-tight truncate w-full ${
+                        isToday ? 'text-amber-300' : 'text-slate-400'
+                      }`}>
+                        {formatDayName(dStr, idx)}
+                      </span>
+
+                      {/* Weather emoji */}
+                      <span className="text-lg my-0.5 select-none">
+                        {info.icon}
+                      </span>
+
+                      {/* High / Low Temp */}
+                      <div className="text-[11px] font-black text-white leading-tight">
+                        {Math.round(dailyMax[idx])}°
+                      </div>
+                      <div className="text-[9px] font-bold text-slate-400">
+                        {Math.round(dailyMin[idx])}°
+                      </div>
+
+                      {/* Rain or Wind tag */}
+                      {dailyRain[idx] > 0 ? (
+                        <span className="mt-1 text-[8px] font-black px-1 py-0.2 rounded-full bg-blue-500/25 text-cyan-200 border border-blue-400/30 whitespace-nowrap">
+                          💧{dailyRain[idx]}%
+                        </span>
+                      ) : (
+                        <span className="mt-1 text-[8px] font-semibold text-slate-500 whitespace-nowrap">
+                          💨{Math.round(dailyWind[idx])}
+                        </span>
+                      )}
+                    </motion.button>
+                  );
                 })}
-                className={`flex flex-col items-center justify-between py-2 px-1 rounded-2xl border transition-all cursor-pointer text-center w-full ${
-                  isToday
-                    ? 'bg-purple-600/35 border-purple-400 shadow-md ring-1 ring-purple-400/40'
-                    : 'bg-slate-900/70 border-slate-800/90 hover:border-slate-700'
-                }`}
-              >
-                {/* Day name */}
-                <span className={`text-[10px] font-black uppercase tracking-tight truncate w-full ${
-                  isToday ? 'text-amber-300' : 'text-slate-400'
-                }`}>
-                  {formatDayName(dStr, idx)}
-                </span>
-
-                {/* Weather emoji */}
-                <span className="text-lg my-0.5 select-none">
-                  {info.icon}
-                </span>
-
-                {/* High / Low Temp */}
-                <div className="text-[11px] font-black text-white leading-tight">
-                  {Math.round(dailyMax[idx])}°
-                </div>
-                <div className="text-[9px] font-bold text-slate-400">
-                  {Math.round(dailyMin[idx])}°
-                </div>
-
-                {/* Rain or Wind tag */}
-                {dailyRain[idx] > 0 ? (
-                  <span className="mt-1 text-[8px] font-black px-1 py-0.2 rounded-full bg-blue-500/25 text-cyan-200 border border-blue-400/30 whitespace-nowrap">
-                    💧{dailyRain[idx]}%
-                  </span>
-                ) : (
-                  <span className="mt-1 text-[8px] font-semibold text-slate-500 whitespace-nowrap">
-                    💨{Math.round(dailyWind[idx])}
-                  </span>
-                )}
-              </motion.button>
-            );
-          })}
-        </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Interactive Detail Modal when any day is tapped - Rendered via Portal to break out of card container */}
         {typeof document !== 'undefined' && createPortal(
