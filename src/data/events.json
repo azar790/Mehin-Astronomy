@@ -420,6 +420,21 @@
     "emoji": "👑"
   },
   {
+    "id": "neptune-opposition",
+    "month": 9,
+    "day": 26,
+    "category": "cosmic",
+    "country_en": "Deep Space (TimeAndDate 🔭)",
+    "country_az": "Dərin Kosmos (TimeAndDate 🔭)",
+    "title_en": "26 September — Neptune at Opposition! 🔵🔭",
+    "title_az": "26 Sentyabr — Neptun Planeti Qarşıdurmada! 🔵🔭",
+    "story_en": "The Sun, Earth, and giant blue Neptune align in a straight cosmic line! Neptune is at its closest and brightest to Earth.",
+    "story_az": "Günəş, Yer və mavi nəhəng Neptun kosmosda düz bir xətt üzərində düzülür! Neptun il ərzində Yerə ən yaxın və ən parlaq məsafədə olur.",
+    "fun_fact_en": "Neptune is 4.3 billion kilometers away — sunlight takes over 4 hours to reach it!",
+    "fun_fact_az": "Neptun Yerdən 4.3 milyard kilometr uzaqdadır — günəş işığı ora 4 saata çatır!",
+    "emoji": "🔵"
+  },
+  {
     "id": "aurora-borealis-season",
     "month": 9,
     "day": 28,
@@ -435,6 +450,21 @@
     "emoji": "🌌"
   },
   {
+    "id": "saturn-opposition",
+    "month": 10,
+    "day": 4,
+    "category": "cosmic",
+    "country_en": "The Solar System (TimeAndDate 🪐)",
+    "country_az": "Günəş Sistemi (TimeAndDate 🪐)",
+    "title_en": "4 October — Saturn at Opposition (Brightest Night)! 🪐✨",
+    "title_az": "4 Oktyabr — Saturn Qarşıdurmada (İlin Ən Parlaq Gecəsi)! 🪐✨",
+    "story_en": "Ringed giant Saturn is opposite the Sun! It rises at sunset and shines all night long like a bright golden jewel in the sky.",
+    "story_az": "Halqalı nəhəng Saturn Günəşin tam qarşısında parıldayır! Gün batanda doğur və bütün gecə göy üzündə qızılı inci kimi bərq vurur.",
+    "fun_fact_en": "Even a small telescope or binoculars can show Saturn's sparkling rings tonight!",
+    "fun_fact_az": "Hətta balaca uşaq teleskopu ilə də bu gecə Saturnun buzlu halqalarını görmək mümkündür!",
+    "emoji": "🪐"
+  },
+  {
     "id": "world-space-week",
     "month": 10,
     "day": 4,
@@ -448,6 +478,21 @@
     "fun_fact_en": "Satellites in space help us watch cartoons, use maps, and check today's weather!",
     "fun_fact_az": "Kosmosdakı peyklər sayəsində biz telefonda xəritədən istifadə edir və hava proqnozunu bilirik!",
     "emoji": "🛰️"
+  },
+  {
+    "id": "draconids-meteor-shower",
+    "month": 10,
+    "day": 8,
+    "category": "cosmic",
+    "country_en": "Night Sky (TimeAndDate 🐉)",
+    "country_az": "Gecə Səması (TimeAndDate 🐉)",
+    "title_en": "8-9 October — Draconids (Dragon) Meteor Shower! 🐉🌠",
+    "title_az": "8–9 Oktyabr — Drakonidlər (Əjdaha Bürcü) Ulduz Yağışı! 🐉🌠",
+    "story_en": "Shooting stars flying from the head of Draco the Dragon constellation! Best watched right after sunset as night falls.",
+    "story_az": "Əjdaha bürcünün başından süzülən axan ulduzlar festivalı! Digər ulduz yağışlarından fərqli olaraq, gün batan kimi axşam tezdən görünür.",
+    "fun_fact_en": "Draconid meteors move more slowly across the sky, leaving long magical glowing trails!",
+    "fun_fact_az": "Drakonid meteorları göydə daha yavaş süzülərək arxasında uzun işıqlı cığırlar qoyur!",
+    "emoji": "🐉"
   },
   {
     "id": "mariana-trench-discovery",
@@ -508,6 +553,21 @@
     "fun_fact_en": "Corals look like colorful rocks, but they are actually tiny friendly sea animals!",
     "fun_fact_az": "Mərcanlar daşa bənzəsə də, əslində okeanı təmiz saxlayan canlı dəniz canlılarıdır!",
     "emoji": "🪸"
+  },
+  {
+    "id": "uranus-opposition",
+    "month": 11,
+    "day": 26,
+    "category": "cosmic",
+    "country_en": "Deep Space (TimeAndDate 💎)",
+    "country_az": "Dərin Kosmos (TimeAndDate 💎)",
+    "title_en": "26 November — Turquoise Uranus at Opposition! 💎🔭",
+    "title_az": "26 Noyabr — Firuzəyi Uran Planeti Qarşıdurmada! 💎🔭",
+    "story_en": "Ice giant Uranus is directly opposite the Sun! Its rare, glowing turquoise disk shines at its maximum brightness.",
+    "story_az": "Firuzəyi rəngli buz nəhəngi Uran Günəşin tam qarşısında düzülür və il ərzində ən parlaq vəziyyətində işıldayır.",
+    "fun_fact_en": "Uranus spins on its side like a rolling cosmic ball!",
+    "fun_fact_az": "Uran planeti öz oxu üzərində yana əyilmiş şəkildə diyirlənərək fırlanır!",
+    "emoji": "💎"
   },
   {
     "id": "geminids-meteor-shower",

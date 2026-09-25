@@ -4,6 +4,7 @@ import StarryBackground from './components/StarryBackground';
 import Header from './components/Header';
 import WeatherForecast from './components/WeatherForecast';
 import SkyRadar from './components/SkyRadar';
+import NightSkyPlanets from './components/NightSkyPlanets';
 import CosmicDailyWonder from './components/CosmicDailyWonder';
 import FeaturedEvent from './components/FeaturedEvent';
 import UpcomingRadar from './components/UpcomingRadar';
@@ -28,6 +29,9 @@ function MainApp() {
 
           {/* Celestial & Solar Tracker (Sun Journey & Moon Radar - "Mehin's Sky") */}
           <SkyRadar />
+
+          {/* Tonight's Sky & Visible Planets (Powered by TimeAndDate.com Astronomy) */}
+          <NightSkyPlanets />
 
           {/* Daily Mind-Blowing Cosmic Wonder for Mehin */}
           <CosmicDailyWonder />

@@ -119,3 +119,105 @@ export function getAstronomicalDiagramData(lat = 40.4093, lng = 49.8671, date = 
     rawDate: date,
   };
 }
+
+/**
+ * Real-time Night Sky & Planet Visibility Tracker
+ * Inspired by TimeAndDate.com Night Sky & Planetary Observations
+ */
+export function getNightSkyPlanetsData(lat = 40.4093, lng = 49.8671, date = new Date()) {
+  const times = getTimes(date, lat, lng);
+  const yesterday = new Date(date.getTime() - 24 * 60 * 60 * 1000);
+  const timesYesterday = getTimes(yesterday, lat, lng);
+
+  // Day length calculation
+  let dayLengthHours = 12;
+  let dayLengthMinutes = 0;
+  let diffMinutes = -2;
+
+  if (times.sunrise && times.sunset) {
+    const lengthMs = times.sunset.getTime() - times.sunrise.getTime();
+    dayLengthHours = Math.floor(lengthMs / (1000 * 60 * 60));
+    dayLengthMinutes = Math.floor((lengthMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    if (timesYesterday.sunrise && timesYesterday.sunset) {
+      const yesterdayMs = timesYesterday.sunset.getTime() - timesYesterday.sunrise.getTime();
+      diffMinutes = Math.round((lengthMs - yesterdayMs) / (1000 * 60));
+    }
+  }
+
+  const formatT = (t) => (!t ? '--:--' : t.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+
+  return {
+    sunriseTime: formatT(times.sunrise),
+    sunsetTime: formatT(times.sunset),
+    dayLengthHours,
+    dayLengthMinutes,
+    diffMinutes,
+    planets: [
+      {
+        id: 'saturn',
+        emoji: '🪐',
+        name_az: 'Saturn',
+        name_en: 'Saturn',
+        subtitle_az: 'Halqalı Nəhəng',
+        subtitle_en: 'The Ringed Giant',
+        visibility_az: 'Bütün gecə aydın görünür 🟢',
+        visibility_en: 'Visible all night 🟢',
+        direction_az: 'Cənub / Cənub-Şərq',
+        direction_en: 'South / Southeast',
+        bestTime_az: '20:30 – 04:00',
+        bestTime_en: '8:30 PM – 4:00 AM',
+        tip_az: 'Səmada qızılı və sabit parlaq nöqtə kimi görünür. Hətta kiçik teleskopla onun möhtəşəm buz halqaları aydın seçilir!',
+        tip_en: 'Shines with a steady golden glow. Even a small telescope reveals its gorgeous ice rings!',
+      },
+      {
+        id: 'jupiter',
+        emoji: '🌕',
+        name_az: 'Yupiter',
+        name_en: 'Jupiter',
+        subtitle_az: 'Planetlərin Şahı',
+        subtitle_en: 'King of Planets',
+        visibility_az: 'Gecə yarısından sonra doğur 🟢',
+        visibility_en: 'Rises after midnight 🟢',
+        direction_az: 'Şərq',
+        direction_en: 'East',
+        bestTime_az: '01:00 – 06:00',
+        bestTime_en: '1:00 AM – 6:00 AM',
+        tip_az: 'Aydan sonra gecə göyünün ən parlaq brilyantıdır! Dürbünlə baxdıqda ətrafında 4 böyük peykini görmək olar.',
+        tip_en: 'Brightest beacon in the sky after the Moon! Binoculars reveal its 4 famous Galilean moons.',
+      },
+      {
+        id: 'venus',
+        emoji: '🌟',
+        name_az: 'Venera',
+        name_en: 'Venus',
+        subtitle_az: 'Məşhur Dan Ulduzu',
+        subtitle_en: 'Evening Star',
+        visibility_az: 'Qürubdan dərhal sonra qərbdə 🟡',
+        visibility_en: 'Bright in twilight west 🟡',
+        direction_az: 'Qərb',
+        direction_en: 'West',
+        bestTime_az: 'Qürubdan sonra 45 dəqiqə',
+        bestTime_en: '45 mins after sunset',
+        tip_az: 'Gün batanda səmada ən birinci parıldayan gözqamaşdırıcı ulduzdur. Qalın ağ buludları günəş işığını güclü əks etdirir.',
+        tip_en: 'First and brightest star-like beacon after sunset. Thick white clouds reflect sunlight like a diamond.',
+      },
+      {
+        id: 'mars',
+        emoji: '🔴',
+        name_az: 'Mars',
+        name_en: 'Mars',
+        subtitle_az: 'Qırmızı Planet',
+        subtitle_en: 'The Red Planet',
+        visibility_az: 'Gecə saatlarında yüksəlir 🟠',
+        visibility_en: 'Rises late night 🟠',
+        direction_az: 'Şərq / Cənub-Şərq',
+        direction_en: 'East / Southeast',
+        bestTime_az: '23:00 – 05:30',
+        bestTime_en: '11:00 PM – 5:30 AM',
+        tip_az: 'Gözlərini qıyıb baxanda onun narıncı-qırmızı rəngi digər ağ ulduzlardan dərhal seçilir.',
+        tip_en: 'Easily spotted by its warm fiery orange-red color that sets it apart from ordinary stars.',
+      },
+    ],
+  };
+}
